@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Brand } from './components/Brand'
 import {
   ArrowRightIcon,
@@ -99,33 +99,60 @@ function scrollToQuiz(source: string) {
 }
 
 function HeroVisual() {
-  useEffect(() => {
-    const visual = document.querySelector<HTMLElement>('.hero-visual')
-    if (!visual || !window.matchMedia('(pointer:fine)').matches) return
+  const visualRef = useRef<HTMLDivElement>(null)
 
-    function handleMove(event: PointerEvent) {
+  useEffect(() => {
+    const visual = visualRef.current
+    const finePointer = window.matchMedia('(pointer: fine)')
+
+    if (!visual || !finePointer.matches) return
+
+    let animationFrame = 0
+
+    function applyPointerPosition(event: PointerEvent) {
       const bounds = visual!.getBoundingClientRect()
       const x = (event.clientX - bounds.left) / bounds.width - 0.5
       const y = (event.clientY - bounds.top) / bounds.height - 0.5
-      visual!.style.setProperty('--tilt-x', `${y * -4}deg`)
-      visual!.style.setProperty('--tilt-y', `${x * 5}deg`)
+
+      cancelAnimationFrame(animationFrame)
+      animationFrame = window.requestAnimationFrame(() => {
+        visual!.classList.add('is-interacting')
+        visual!.style.setProperty('--parallax-x', `${x * 12}px`)
+        visual!.style.setProperty('--parallax-y', `${y * 10}px`)
+        visual!.style.setProperty('--depth-x', `${x * -7}px`)
+        visual!.style.setProperty('--depth-y', `${y * -6}px`)
+        visual!.style.setProperty('--tilt-x', `${y * -1.6}deg`)
+        visual!.style.setProperty('--tilt-y', `${x * 2.1}deg`)
+        visual!.style.setProperty('--glow-x', `${50 + x * 24}%`)
+        visual!.style.setProperty('--glow-y', `${46 + y * 20}%`)
+      })
     }
 
     function reset() {
+      cancelAnimationFrame(animationFrame)
+      visual!.classList.remove('is-interacting')
+      visual!.style.setProperty('--parallax-x', '0px')
+      visual!.style.setProperty('--parallax-y', '0px')
+      visual!.style.setProperty('--depth-x', '0px')
+      visual!.style.setProperty('--depth-y', '0px')
       visual!.style.setProperty('--tilt-x', '0deg')
       visual!.style.setProperty('--tilt-y', '0deg')
+      visual!.style.setProperty('--glow-x', '50%')
+      visual!.style.setProperty('--glow-y', '46%')
     }
 
-    visual.addEventListener('pointermove', handleMove)
+    visual.addEventListener('pointermove', applyPointerPosition)
     visual.addEventListener('pointerleave', reset)
+
     return () => {
-      visual.removeEventListener('pointermove', handleMove)
+      cancelAnimationFrame(animationFrame)
+      visual.removeEventListener('pointermove', applyPointerPosition)
       visual.removeEventListener('pointerleave', reset)
     }
   }, [])
 
   return (
-    <div className="hero-visual" aria-label="Prévia visual do Prato 10x">
+    <div ref={visualRef} className="hero-visual" aria-label="Prévia visual do Prato 10x">
       <span className="leaf leaf--one" aria-hidden="true"><LeafIcon /></span>
       <span className="leaf leaf--two" aria-hidden="true"><LeafIcon /></span>
       <div className="hero-visual__halo" />
@@ -194,7 +221,51 @@ function ProductArt({ type }: { type: string }) {
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [activeSection, setActiveSection] = useState('top')
   useReveal()
+
+  useEffect(() => {
+    function updateHeaderState() {
+      setScrolled(window.scrollY > 18)
+    }
+
+    updateHeaderState()
+    window.addEventListener('scroll', updateHeaderState, { passive: true })
+    return () => window.removeEventListener('scroll', updateHeaderState)
+  }, [])
+
+  useEffect(() => {
+    const sectionIds = ['top', 'problema', 'metodo', 'produto', 'quiz']
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => Boolean(section))
+
+    if (!('IntersectionObserver' in window)) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+
+        if (visible?.target.id) setActiveSection(visible.target.id)
+      },
+      { rootMargin: '-28% 0px -58% 0px', threshold: [0, 0.15, 0.35, 0.6] },
+    )
+
+    sections.forEach((section) => observer.observe(section))
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    function closeMenuOnEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') setMenuOpen(false)
+    }
+
+    window.addEventListener('keydown', closeMenuOnEscape)
+    return () => window.removeEventListener('keydown', closeMenuOnEscape)
+  }, [])
 
   function navigateTo(id: string) {
     setMenuOpen(false)
@@ -203,27 +274,28 @@ export default function App() {
 
   return (
     <div className="site-shell">
-      <header className="topbar">
+      <header className={`topbar${scrolled ? ' topbar--scrolled' : ''}`}>
         <div className="container topbar__inner">
           <a href="#top" className="brand-link" aria-label="Prato 10x — início"><Brand /></a>
           <nav className="desktop-nav" aria-label="Navegação principal">
-            <button type="button" onClick={() => navigateTo('problema')}>O problema</button>
-            <button type="button" onClick={() => navigateTo('metodo')}>Como funciona</button>
-            <button type="button" onClick={() => navigateTo('produto')}>O que você recebe</button>
-            <button type="button" onClick={() => scrollToQuiz('header-nav')}>Quiz</button>
+            <button className={activeSection === 'problema' ? 'is-active' : undefined} aria-current={activeSection === 'problema' ? 'location' : undefined} type="button" onClick={() => navigateTo('problema')}>O problema</button>
+            <button className={activeSection === 'metodo' ? 'is-active' : undefined} aria-current={activeSection === 'metodo' ? 'location' : undefined} type="button" onClick={() => navigateTo('metodo')}>Como funciona</button>
+            <button className={activeSection === 'produto' ? 'is-active' : undefined} aria-current={activeSection === 'produto' ? 'location' : undefined} type="button" onClick={() => navigateTo('produto')}>O que você recebe</button>
+            <button className={activeSection === 'quiz' ? 'is-active' : undefined} aria-current={activeSection === 'quiz' ? 'location' : undefined} type="button" onClick={() => scrollToQuiz('header-nav')}>Quiz</button>
           </nav>
           <button className="header-quiz" type="button" onClick={() => scrollToQuiz('header')}>Fazer o quiz</button>
           <button
             className="menu-toggle"
             type="button"
             aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
             aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
             onClick={() => setMenuOpen((value) => !value)}
           >
             {menuOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
         </div>
-        <div className={`mobile-menu${menuOpen ? ' mobile-menu--open' : ''}`}>
+        <div id="mobile-navigation" className={`mobile-menu${menuOpen ? ' mobile-menu--open' : ''}`}>
           <button type="button" onClick={() => navigateTo('problema')}>O problema</button>
           <button type="button" onClick={() => navigateTo('metodo')}>Como funciona</button>
           <button type="button" onClick={() => navigateTo('produto')}>O que você recebe</button>
