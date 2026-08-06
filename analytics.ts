@@ -27,15 +27,64 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--cream); }
-body { margin: 0; min-width: 320px; background: var(--cream); color: var(--ink); }
+
+/*
+ * Contenção horizontal global.
+ * Evita que formas decorativas, sombras e elementos transformados criem
+ * rolagem lateral em navegadores mobile, inclusive versões do Safari que
+ * ainda não aplicam `overflow: clip` de forma consistente.
+ */
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  background: var(--cream);
+}
+
+body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 320px;
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+#root,
+.site-shell {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+@supports (overflow: clip) {
+  html,
+  body,
+  #root,
+  .site-shell {
+    overflow-x: clip;
+  }
+}
+
 button, a, input { font: inherit; }
 button { color: inherit; }
 a { color: inherit; }
 img { max-width: 100%; display: block; }
 svg { display: block; }
-.site-shell { overflow: clip; }
-.container { width: min(100% - 32px, 1160px); margin-inline: auto; }
+.container { width: min(100% - 32px, 1160px); min-width: 0; margin-inline: auto; }
+
+.hero__grid > *,
+.method-card > *,
+.product-item > *,
+.quiz-choice > *,
+.audience-layout > *,
+.faq-layout > *,
+.footer__inner > * {
+  min-width: 0;
+}
 .section { position: relative; padding: 86px 0; }
 
 [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
