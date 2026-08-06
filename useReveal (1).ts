@@ -129,7 +129,7 @@ svg { display: block; }
 .hero { position: relative; min-height: 100svh; padding: 118px 0 42px; overflow: hidden; background: linear-gradient(180deg, #fbf7f0 0%, #f7f2e9 100%); }
 .hero__grid { position: relative; z-index: 2; display: grid; gap: 32px; }
 .hero__copy { max-width: 650px; }
-.hero h1 { margin: 18px 0 22px; font-family: Georgia, "Times New Roman", serif; font-weight: 500; font-size: clamp(3.9rem, 17.5vw, 6.8rem); line-height: .91; letter-spacing: -.065em; }
+.hero h1 { margin: 18px 0 22px; font-family: Georgia, "Times New Roman", serif; font-weight: 500; font-size: clamp(3.55rem, 16vw, 6.3rem); line-height: .91; letter-spacing: -.065em; }
 .hero h1 em { display: block; color: var(--green); font-weight: 500; }
 .hero__lead { margin: 0; font-size: 1.12rem; line-height: 1.6; color: #263a31; }
 .hero__format { margin: 22px 0; display: flex; align-items: center; gap: 10px; color: var(--deep); font-weight: 800; }
@@ -327,7 +327,7 @@ svg { display: block; }
   .container { width: min(100% - 24px, 1160px); }
   .brand__name { font-size: 1.22rem; }
   .brand__copy small { font-size: .52rem; }
-  .hero h1 { font-size: clamp(3.45rem, 17vw, 4.4rem); }
+  .hero h1 { font-size: clamp(3.15rem, 15.5vw, 4.1rem); }
   .method-card { grid-template-columns: 78px 1fr; padding: 20px; gap: 16px; }
   .method-card__visual { width: 74px; height: 74px; }
   .method-card__visual svg { width: 34px; }
@@ -342,7 +342,7 @@ svg { display: block; }
   .menu-toggle, .mobile-menu { display: none; }
   .hero { padding: 135px 0 80px; }
   .hero__grid { grid-template-columns: .93fr 1.07fr; align-items: center; gap: 34px; }
-  .hero h1 { font-size: clamp(4.2rem, 7.5vw, 6.5rem); }
+  .hero h1 { font-size: clamp(3.9rem, 7vw, 6.1rem); }
   .hero__cta { width: auto; }
   .hero__micro { justify-content: flex-start; }
   .hero-visual { min-height: 620px; }

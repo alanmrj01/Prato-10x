@@ -309,7 +309,10 @@ export default function App() {
           <div className="hero__shape hero__shape--peach" aria-hidden="true" />
           <div className="container hero__grid">
             <div className="hero__copy" data-reveal>
-              <h1>Se a sua fome diminuiu, <em>comer bem está mais difícil.</em></h1>
+              <h1>
+                Se você está comendo menos,{' '}
+                <em>refeições práticas podem tornar sua rotina mais saudável.</em>
+              </h1>
               <p className="hero__lead">O Prato 10x mostra como transformar refeições menores em escolhas mais completas e bem planejadas.</p>
               <p className="hero__format"><CheckIcon /> Guia prático + plano de aplicação por 30 dias.</p>
               <button className="button button--primary hero__cta" type="button" onClick={() => scrollToQuiz('hero')}>
