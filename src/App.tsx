@@ -310,8 +310,9 @@ export default function App() {
           <div className="container hero__grid">
             <div className="hero__copy" data-reveal>
               <h1>
-                Se você está comendo menos,{' '}
-                <em>refeições práticas podem tornar sua rotina mais saudável.</em>
+                <span>Se você está comendo menos.</span>
+                <em>Você precisa saber</em>
+                <span>oque merece prioridade para preservar força e ganhar energia.</span>
               </h1>
               <p className="hero__lead">O Prato 10x mostra como transformar refeições menores em escolhas mais completas e bem planejadas.</p>
               <p className="hero__format"><CheckIcon /> Guia prático + plano de aplicação por 30 dias.</p>
