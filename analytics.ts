@@ -28,9 +28,9 @@ const quizOptions: QuizOption[] = [
     id: 'Pulo Refeições',
     label: 'Acabo pulando refeições sem planejar.',
     icon: ClockIcon,
-    resultTitle: 'Sua rotina está dependendo demais da fome aparecer.',
+    resultTitle: 'Sua rotina está ficando sem uma referência clara.',
     resultText:
-      'Quando a decisão fica para a última hora, o horário pode passar sem que uma refeição aconteça. O Prato 10x ajuda a definir opções antecipadamente para reduzir esse vazio na rotina.',
+      'Quando você está comendo menos, deixar cada decisão para a última hora aumenta o improviso. O Prato 10x ajuda a definir opções antecipadamente para dar mais direção à rotina.',
   },
   {
     id: 'Escolho o Mais Fácil',
@@ -38,7 +38,7 @@ const quizOptions: QuizOption[] = [
     icon: BowlIcon,
     resultTitle: 'O mais fácil está decidindo por você.',
     resultText:
-      'Quando a fome diminui, a praticidade pesa ainda mais nas escolhas. O Prato 10x ajuda a manter opções simples e mais bem planejadas disponíveis para esses momentos.',
+      'Quando você está comendo menos, a praticidade pesa ainda mais nas escolhas. O Prato 10x ajuda a manter opções simples e mais bem planejadas disponíveis para esses momentos.',
   },
   {
     id: 'Não sei Priorizar',
@@ -181,8 +181,8 @@ export function Quiz() {
           </span>
 
           <h2>
-            O que mais dificulta sua alimentação quando o apetite
-            diminui?
+            O que mais dificulta suas refeições quando você está
+            comendo menos?
           </h2>
         </div>
 

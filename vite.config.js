@@ -1,9 +1,1 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-export default defineConfig({
-    plugins: [react()],
-    server: {
-        host: true,
-        port: 5173,
-    },
-});
+{"root":["./src/App.tsx","./src/config.ts","./src/main.tsx","./src/components/Brand.tsx","./src/components/Icons.tsx","./src/components/Quiz.tsx","./src/lib/analytics.ts","./src/lib/useReveal.ts"],"version":"5.6.3"}

@@ -46,7 +46,7 @@ const methodSteps = [
 const productItems = [
   {
     title: 'Guia visual Prato 10x',
-    copy: 'Explicações simples para adaptar sua organização alimentar aos dias de menor apetite.',
+    copy: 'Explicações simples para organizar melhor suas escolhas nos dias em que você está comendo menos.',
     icon: BookIcon,
     art: 'book',
   },
@@ -283,7 +283,7 @@ export default function App() {
             <button className={activeSection === 'produto' ? 'is-active' : undefined} aria-current={activeSection === 'produto' ? 'location' : undefined} type="button" onClick={() => navigateTo('produto')}>O que você recebe</button>
             <button className={activeSection === 'quiz' ? 'is-active' : undefined} aria-current={activeSection === 'quiz' ? 'location' : undefined} type="button" onClick={() => scrollToQuiz('header-nav')}>Quiz</button>
           </nav>
-          <button className="header-quiz" type="button" onClick={() => scrollToQuiz('header')}>Fazer o quiz</button>
+          <button className="header-quiz" type="button" onClick={() => scrollToQuiz('header')}>Ver o que priorizar</button>
           <button
             className="menu-toggle"
             type="button"
@@ -299,7 +299,7 @@ export default function App() {
           <button type="button" onClick={() => navigateTo('problema')}>O problema</button>
           <button type="button" onClick={() => navigateTo('metodo')}>Como funciona</button>
           <button type="button" onClick={() => navigateTo('produto')}>O que você recebe</button>
-          <button type="button" onClick={() => { setMenuOpen(false); scrollToQuiz('mobile-menu') }}>Fazer o quiz</button>
+          <button type="button" onClick={() => { setMenuOpen(false); scrollToQuiz('mobile-menu') }}>Quero saber o que priorizar</button>
         </div>
       </header>
 
@@ -309,17 +309,23 @@ export default function App() {
           <div className="hero__shape hero__shape--peach" aria-hidden="true" />
           <div className="container hero__grid">
             <div className="hero__copy" data-reveal>
+              <span className="hero__eyebrow">PARA QUEM ESTÁ COMENDO MENOS</span>
               <h1>
-                <span>Se você está comendo menos.</span>
-                <em>Você precisa saber</em>
-                <span>oque merece prioridade para preservar força e ganhar energia.</span>
+                <span>Se você está comendo menos para cuidar do peso,</span>
+                <em>você precisa saber</em>
+                <span>o que merece prioridade no seu prato.</span>
               </h1>
-              <p className="hero__lead">O Prato 10x mostra como transformar refeições menores em escolhas mais completas e bem planejadas.</p>
-              <p className="hero__format"><CheckIcon /> Guia prático + plano de aplicação por 30 dias.</p>
+              <p className="hero__lead">O Prato 10x é um guia visual para mostrar o que priorizar em refeições menores, com mais equilíbrio, saciedade e direção — sem simplesmente cortar tudo.</p>
+              <div className="hero__quickfacts" aria-label="O que você recebe com o Prato 10x">
+                <span><CheckIcon /> Guia visual</span>
+                <span><GridIcon /> Matriz de refeições</span>
+                <span><BagIcon /> Lista prática</span>
+                <span><ClockIcon /> Acesso imediato</span>
+              </div>
               <button className="button button--primary hero__cta" type="button" onClick={() => scrollToQuiz('hero')}>
-                Fazer o quiz rápido <ArrowRightIcon />
+                Quero saber o que priorizar <ArrowRightIcon />
               </button>
-              <p className="hero__micro"><LockIcon /> 1 pergunta • resultado imediato</p>
+              <p className="hero__micro"><LockIcon /> 1 pergunta • depois você segue para o acesso ao Prato 10x</p>
             </div>
             <HeroVisual />
           </div>
@@ -328,19 +334,19 @@ export default function App() {
         <section className="section pain-section" id="problema">
           <div className="container pain-layout" data-reveal>
             <div className="section-heading section-heading--center">
-              <span className="eyebrow">O DESAFIO COMEÇA DEPOIS QUE A FOME DIMINUI</span>
-              <h2>Sua rotina ainda espera uma fome que quase não aparece.</h2>
+              <span className="eyebrow">O DESAFIO COMEÇA QUANDO VOCÊ PASSA A COMER MENOS</span>
+              <h2>Quando a quantidade diminui, cada escolha precisa ter mais intenção.</h2>
             </div>
             <div className="pain-copy">
-              <p>Quando a fome diminui, é comum deixar para decidir o que comer apenas na hora. Algumas refeições são puladas. Outras viram aquilo que estiver mais fácil.</p>
-              <div className="pain-callout"><LeafIcon /><p><strong>O problema não é apenas comer menos.</strong> É não saber o que precisa ganhar prioridade quando a quantidade também diminuiu.</p></div>
+              <p>Quando você passa a comer menos para cuidar do peso, é fácil acreditar que basta reduzir o prato. Mas cortar por cortar pode deixar a refeição sem direção e tornar cada escolha uma nova dúvida.</p>
+              <div className="pain-callout"><LeafIcon /><p><strong>O problema não é simplesmente comer menos.</strong> É não saber o que merece prioridade quando existe menos espaço no prato.</p></div>
             </div>
             <div className="pain-flow" aria-label="Fluxo do improviso alimentar">
-              <article><span className="pain-flow__icon"><ClockIcon /></span><strong>Deixo para decidir na hora.</strong></article>
+              <article><span className="pain-flow__icon"><ClockIcon /></span><strong>Reduzo o prato sem uma referência.</strong></article>
               <span className="pain-flow__arrow">→</span>
-              <article><span className="pain-flow__icon pain-flow__icon--peach"><BowlIcon /></span><strong>Acabo pulando ou improvisando.</strong></article>
+              <article><span className="pain-flow__icon pain-flow__icon--peach"><BowlIcon /></span><strong>Corto ou improviso por tentativa e erro.</strong></article>
               <span className="pain-flow__arrow">→</span>
-              <article><span className="pain-flow__icon"><QuestionIcon /></span><strong>No final do dia, não sei se me alimentei bem.</strong></article>
+              <article><span className="pain-flow__icon"><QuestionIcon /></span><strong>Continuo sem saber se priorizei o que importava.</strong></article>
             </div>
           </div>
         </section>
@@ -349,7 +355,7 @@ export default function App() {
           <div className="container" data-reveal>
             <div className="section-heading section-heading--center">
               <span className="eyebrow">COMO O PRATO 10X AJUDA</span>
-              <h2>Três passos para comer melhor com <em>menos apetite.</em></h2>
+              <h2>Três passos para organizar refeições menores com <em>mais direção.</em></h2>
             </div>
             <div className="method-grid">
               {methodSteps.map((step) => {
@@ -368,9 +374,9 @@ export default function App() {
                 )
               })}
             </div>
-            <blockquote className="method-quote">Você não precisa voltar a comer como antes. Precisa aprender a se alimentar melhor dentro da quantidade que consegue consumir agora.</blockquote>
+            <blockquote className="method-quote">Você não precisa transformar cada refeição em uma lista de regras. Precisa de uma referência clara para saber o que priorizar quando decide comer menos.</blockquote>
             <button className="button button--primary section-cta" type="button" onClick={() => scrollToQuiz('method')}>
-              Quero entender o que está me atrapalhando <ArrowRightIcon />
+              Quero saber o que priorizar <ArrowRightIcon />
             </button>
           </div>
         </section>
@@ -426,9 +432,9 @@ export default function App() {
               <article className="comparison comparison--before">
                 <span className="comparison__label">ANTES</span>
                 <ul>
-                  <li>Esperar a fome aparecer</li>
-                  <li>Decidir tudo na hora</li>
-                  <li>Pular refeições</li>
+                  <li>Reduzir o prato sem uma referência</li>
+                  <li>Cortar alimentos por tentativa e erro</li>
+                  <li>Improvisar quando surge a dúvida</li>
                   <li>Escolher apenas o mais fácil</li>
                   <li>Não saber o que priorizar</li>
                 </ul>
@@ -446,7 +452,7 @@ export default function App() {
                 <div className="comparison__bowl comparison__bowl--colorful" aria-hidden="true" />
               </article>
             </div>
-            <p className="transformation-note">Não é sobre comer mais. É sobre fazer escolhas melhores com o que você consegue comer.</p>
+            <p className="transformation-note">Não é sobre esvaziar o prato. É sobre saber o que merece espaço quando você decide comer menos.</p>
           </div>
         </section>
 
@@ -458,8 +464,8 @@ export default function App() {
               <span className="eyebrow">PARA QUEM É</span>
               <h2>O Prato 10x pode fazer sentido quando...</h2>
               <ul>
-                <li><CheckIcon /> O apetite diminuiu e sua rotina ainda não se adaptou.</li>
-                <li><CheckIcon /> Você percebe que está pulando refeições.</li>
+                <li><CheckIcon /> Você está comendo menos e ainda não sabe como reorganizar o prato.</li>
+                <li><CheckIcon /> Você quer cuidar do peso sem transformar a alimentação em uma lista de cortes.</li>
                 <li><CheckIcon /> Suas escolhas ficaram repetitivas.</li>
                 <li><CheckIcon /> Falta clareza sobre o que priorizar.</li>
                 <li><CheckIcon /> Você depende do improviso.</li>
@@ -480,7 +486,7 @@ export default function App() {
             <div className="section-heading">
               <span className="eyebrow">DÚVIDAS FREQUENTES</span>
               <h2>Antes de fazer o quiz.</h2>
-              <button className="text-link" type="button" onClick={() => scrollToQuiz('faq')}>Ir para o quiz <ArrowRightIcon /></button>
+              <button className="text-link" type="button" onClick={() => scrollToQuiz('faq')}>Quero saber o que priorizar <ArrowRightIcon /></button>
             </div>
             <div className="faq-list">
               {faqs.map((faq) => (
