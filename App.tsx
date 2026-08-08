@@ -228,7 +228,7 @@ function HeroVisual() {
       <span className="leaf leaf--one" aria-hidden="true"><LeafIcon /></span>
       <span className="leaf leaf--two" aria-hidden="true"><LeafIcon /></span>
       <div className="hero-visual__halo" />
-      <img src="/prato10x-hero-mockup.webp" alt="Livro Prato 10x, celular com matriz de refeições e uma tigela de comida" width="901" height="685" fetchPriority="high" />
+      <img src="/prato10x-hero-mockup.webp" alt="Refeição equilibrada com frango, arroz, feijão, vegetais e acompanhamento" width="901" height="685" fetchPriority="high" />
       <span className="hero-visual__badge hero-visual__badge--one">Priorize</span>
       <span className="hero-visual__badge hero-visual__badge--two">Combine</span>
       <span className="hero-visual__badge hero-visual__badge--three">Prepare</span>
@@ -355,7 +355,7 @@ export default function App() {
             <button className={activeSection === 'produto' ? 'is-active' : undefined} aria-current={activeSection === 'produto' ? 'location' : undefined} type="button" onClick={() => navigateTo('produto')}>O que você recebe</button>
             <button className={activeSection === 'quiz' ? 'is-active' : undefined} aria-current={activeSection === 'quiz' ? 'location' : undefined} type="button" onClick={() => scrollToQuiz('header-nav')}>Quiz</button>
           </nav>
-          <button className="header-quiz" type="button" onClick={() => scrollToQuiz('header')}>Ver o que priorizar</button>
+          <button className="header-quiz" type="button" onClick={() => scrollToQuiz('header')}>Começar agora</button>
           <button
             className="menu-toggle"
             type="button"
@@ -371,7 +371,7 @@ export default function App() {
           <button type="button" onClick={() => navigateTo('problema')}>O problema</button>
           <button type="button" onClick={() => navigateTo('metodo')}>Como funciona</button>
           <button type="button" onClick={() => navigateTo('produto')}>O que você recebe</button>
-          <button type="button" onClick={() => { setMenuOpen(false); scrollToQuiz('mobile-menu') }}>Quero saber o que priorizar</button>
+          <button type="button" onClick={() => { setMenuOpen(false); scrollToQuiz('mobile-menu') }}>Descobrir minhas prioridades</button>
         </div>
       </header>
 
@@ -395,7 +395,7 @@ export default function App() {
                 <span><ClockIcon /> Acesso imediato</span>
               </div>
               <button className="button button--primary hero__cta" type="button" onClick={() => scrollToQuiz('hero')}>
-                Quero saber o que priorizar <ArrowRightIcon />
+                Quero montar minhas refeições com mais direção <ArrowRightIcon />
               </button>
               <p className="hero__micro"><LockIcon /> 1 pergunta • depois você segue para o acesso ao Prato 10x</p>
             </div>
@@ -448,7 +448,7 @@ export default function App() {
             </div>
             <blockquote className="method-quote">Você não precisa transformar cada refeição em uma lista de regras. Precisa de uma referência clara para saber o que priorizar quando decide comer menos.</blockquote>
             <button className="button button--primary section-cta" type="button" onClick={() => scrollToQuiz('method')}>
-              Quero saber o que priorizar <ArrowRightIcon />
+              Quero uma referência simples para o dia a dia <ArrowRightIcon />
             </button>
           </div>
         </section>
@@ -663,7 +663,7 @@ export default function App() {
               <h2>Já entendi. Quero saber o que priorizar.</h2>
               <p>Responda uma pergunta rápida para continuar para o Prato 10x.</p>
               <button className="button button--primary conversion-bridge__cta" type="button" onClick={() => scrollToQuiz('long-form-bridge')}>
-                Quero saber o que priorizar <ArrowRightIcon />
+                Quero levar o Prato 10X para minha rotina <ArrowRightIcon />
               </button>
               <small><LockIcon /> 1 pergunta rápida • depois você segue para o acesso ao Prato 10x</small>
             </div>
@@ -700,7 +700,7 @@ export default function App() {
             <div className="section-heading">
               <span className="eyebrow">DÚVIDAS FREQUENTES</span>
               <h2>Antes de fazer o quiz.</h2>
-              <button className="text-link" type="button" onClick={() => scrollToQuiz('faq')}>Quero saber o que priorizar <ArrowRightIcon /></button>
+              <button className="text-link" type="button" onClick={() => scrollToQuiz('faq')}>Quero começar com mais direção <ArrowRightIcon /></button>
             </div>
             <div className="faq-list">
               {faqs.map((faq) => (
