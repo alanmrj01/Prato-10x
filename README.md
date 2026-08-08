@@ -1,47 +1,31 @@
 # Prato 10x — Landing Page
 
-Landing page React + TypeScript, mobile-first, preparada para Netlify Forms.
+Versão de raiz plana preparada para GitHub, StackBlitz e Netlify.
 
-## Executar
+## Importante
+Todos os arquivos necessários estão na raiz de propósito. Não renomeie nem troque o conteúdo entre arquivos.
 
-```bash
-npm install
-npm run dev
-```
+## StackBlitz
+O projeto possui `stackblitz.startCommand` no `package.json` e inicia com:
 
-## Build
+    npm run dev
 
-```bash
-npm run build
-```
+## Netlify
+Build:
 
-## Configurar o checkout
+    npm run build
 
-Edite `src/config.ts` e substitua:
+Publish directory:
 
-```ts
-checkoutUrl: 'https://pay.hotmart.com/COLE_AQUI_O_LINK_DO_CHECKOUT'
-```
+    dist
 
-Todos os CTAs anteriores ao quiz levam para `#quiz`. O link de checkout só aparece após o resultado.
-
-## Netlify Forms
-
-O formulário estático `prato-10x-quiz` fica em `index.html`. Após publicar na Netlify, as respostas aparecerão em **Forms → prato-10x-quiz**.
-
-## Campos registrados
-
-- `answer`
-- `answer_label`
-- UTMs
-- `page_version`
-- `timestamp`
-
-O quiz não coleta nome, e-mail, peso, medicamento, diagnóstico ou sintomas.
+O build também copia para `dist` os arquivos estáticos usados pela landing page.
 
 ## Arquivos principais
-
-- `src/App.tsx`: seções e copys
-- `src/components/Quiz.tsx`: quiz, resultado e checkout
-- `src/config.ts`: preço, link do checkout e dados centrais
-- `src/styles.css`: identidade visual, responsividade e animações
+- `index.html` — documento HTML e Meta Pixel
+- `main.tsx` — entrada React
+- `App.tsx` — landing page
+- `Quiz.tsx` — quiz e redirecionamento para checkout
+- `config.ts` — configuração do produto/checkout
+- `analytics.ts` — eventos e UTMs
+- `styles.css` — estilos
