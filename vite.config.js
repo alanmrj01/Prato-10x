@@ -1,1 +1,7 @@
-{"root":["./src/App.tsx","./src/config.ts","./src/main.tsx","./src/components/Brand.tsx","./src/components/Icons.tsx","./src/components/Quiz.tsx","./src/lib/analytics.ts","./src/lib/useReveal.ts"],"version":"5.6.3"}
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}

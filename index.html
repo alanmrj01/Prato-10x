@@ -1,26 +1,19 @@
-import { useEffect } from 'react'
+type AnalyticsValue = string | number | boolean | null | undefined
+export type AnalyticsPayload = Record<string, AnalyticsValue>
 
-export function useReveal(): void {
-  useEffect(() => {
-    const nodes = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'))
-    if (!('IntersectionObserver' in window)) {
-      nodes.forEach((node) => node.classList.add('is-visible'))
-      return
-    }
+declare global {
+  interface Window {
+    dataLayer?: Array<Record<string, unknown>>
+  }
+}
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible')
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -48px' },
-    )
+export function trackEvent(event: string, payload: AnalyticsPayload = {}): void {
+  window.dataLayer = window.dataLayer ?? []
+  window.dataLayer.push({ event, ...payload })
+}
 
-    nodes.forEach((node) => observer.observe(node))
-    return () => observer.disconnect()
-  }, [])
+export function getUtmParameters(): Record<string, string> {
+  const params = new URLSearchParams(window.location.search)
+  const keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']
+  return Object.fromEntries(keys.map((key) => [key, params.get(key)?.trim() ?? '']))
 }

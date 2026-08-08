@@ -1,7 +1,4 @@
-* text=auto eol=lf
-*.json text eol=lf
-*.toml text eol=lf
-*.ts text eol=lf
-*.tsx text eol=lf
-*.css text eol=lf
-*.html text eol=lf
+node_modules/
+dist/
+.netlify/
+*.log
