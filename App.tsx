@@ -70,6 +70,78 @@ const productItems = [
   },
 ]
 
+const realLifeQuestions = [
+  {
+    title: 'O que deveria entrar primeiro?',
+    copy: 'Quando a refeição precisa ser menor, a dúvida deixa de ser apenas quanto comer e passa a ser o que merece prioridade.',
+    icon: QuestionIcon,
+  },
+  {
+    title: 'Como montar algo simples sem escolher qualquer coisa?',
+    copy: 'Nos dias corridos, uma referência pronta ajuda a reduzir decisões de última hora e o improviso.',
+    icon: ClockIcon,
+  },
+  {
+    title: 'Como saber se priorizei o que realmente importa?',
+    copy: 'O Prato 10x organiza as escolhas em uma lógica visual que você pode consultar sempre que surgir essa dúvida.',
+    icon: TargetIcon,
+  },
+]
+
+const dailyUseSteps = [
+  {
+    number: '01',
+    title: 'Abra a referência',
+    copy: 'Consulte o guia quando surgir a dúvida sobre como organizar uma refeição menor.',
+    icon: BookIcon,
+  },
+  {
+    number: '02',
+    title: 'Veja o que priorizar',
+    copy: 'Use a matriz visual para orientar a escolha entre proteínas, vegetais e complementos.',
+    icon: GridIcon,
+  },
+  {
+    number: '03',
+    title: 'Adapte ao que você tem',
+    copy: 'Escolha combinações possíveis para a sua rotina, sem transformar cada refeição em um cálculo.',
+    icon: BowlIcon,
+  },
+  {
+    number: '04',
+    title: 'Consulte novamente quando precisar',
+    copy: 'A referência fica disponível no celular para reduzir o improviso nos próximos momentos.',
+    icon: ClockIcon,
+  },
+]
+
+const insideItems = [
+  {
+    kicker: 'MATRIZ',
+    title: 'Matriz de refeições menores',
+    copy: 'Uma visualização simples para consultar prioridades e combinações possíveis.',
+    icon: GridIcon,
+  },
+  {
+    kicker: 'MAPA',
+    title: 'Mapa de opções práticas',
+    copy: 'Alternativas organizadas para não depender de improviso quando estiver sem ideia.',
+    icon: BagIcon,
+  },
+  {
+    kicker: '30 DIAS',
+    title: 'Plano de aplicação',
+    copy: 'Um caminho curto para transformar a referência em uma rotina mais fácil de repetir.',
+    icon: CalendarIcon,
+  },
+  {
+    kicker: 'LISTA',
+    title: 'Lista de compras editável',
+    copy: 'Uma forma prática de deixar opções disponíveis antes que a correria decida por você.',
+    icon: CheckIcon,
+  },
+]
+
 const faqs = [
   {
     question: 'O Prato 10x é uma dieta?',
@@ -453,6 +525,148 @@ export default function App() {
               </article>
             </div>
             <p className="transformation-note">Não é sobre esvaziar o prato. É sobre saber o que merece espaço quando você decide comer menos.</p>
+          </div>
+        </section>
+
+        <section className="section use-cases-section">
+          <div className="container" data-reveal>
+            <div className="section-heading section-heading--center">
+              <span className="eyebrow">NA PRÁTICA</span>
+              <h2>As dúvidas aparecem justamente na hora de montar a refeição.</h2>
+              <p>O Prato 10x foi pensado para ser consultado nesses momentos — quando você quer comer menos, mas não quer decidir tudo no improviso.</p>
+            </div>
+
+            <div className="use-cases-grid">
+              {realLifeQuestions.map((item) => {
+                const Icon = item.icon
+                return (
+                  <article className="use-case-card" key={item.title}>
+                    <span className="use-case-card__icon"><Icon /></span>
+                    <div>
+                      <span className="use-case-card__question">“</span>
+                      <h3>{item.title}</h3>
+                      <p>{item.copy}</p>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+
+            <p className="use-cases-note">Em vez de decorar mais regras, você passa a ter uma referência para consultar quando a dúvida aparece.</p>
+          </div>
+        </section>
+
+        <section className="section reference-section">
+          <div className="container reference-layout" data-reveal>
+            <div className="section-heading">
+              <span className="eyebrow">UMA REFERÊNCIA, NÃO MAIS REGRAS</span>
+              <h2>Você não recebe uma nova lista de proibições.</h2>
+              <p>A proposta é deixar a decisão mais clara e palpável, sem transformar o Prato 10x em uma dieta rígida ou em um cardápio fechado.</p>
+            </div>
+
+            <div className="reference-comparison">
+              <article className="reference-card reference-card--no">
+                <span className="reference-card__label">NÃO É</span>
+                <ul>
+                  <li><CloseIcon /> Dieta rígida</li>
+                  <li><CloseIcon /> Cardápio fechado</li>
+                  <li><CloseIcon /> Contagem complicada</li>
+                  <li><CloseIcon /> Lista interminável de proibições</li>
+                  <li><CloseIcon /> Substituto de acompanhamento profissional</li>
+                </ul>
+              </article>
+
+              <article className="reference-card reference-card--yes">
+                <span className="reference-card__label">É UMA REFERÊNCIA PARA</span>
+                <ul>
+                  <li><CheckIcon /> Visualizar prioridades</li>
+                  <li><CheckIcon /> Consultar combinações possíveis</li>
+                  <li><CheckIcon /> Organizar opções para dias diferentes</li>
+                  <li><CheckIcon /> Reduzir decisões de última hora</li>
+                  <li><CheckIcon /> Usar no celular sempre que precisar</li>
+                </ul>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className="section routine-section">
+          <div className="container" data-reveal>
+            <div className="section-heading section-heading--center">
+              <span className="eyebrow">COMO USAR NO DIA A DIA</span>
+              <h2>Uma consulta rápida quando você precisa decidir.</h2>
+              <p>O material foi organizado para ser usado de forma prática, sem exigir semanas de estudo antes de começar.</p>
+            </div>
+
+            <div className="routine-steps">
+              {dailyUseSteps.map((step) => {
+                const Icon = step.icon
+                return (
+                  <article className="routine-step" key={step.number}>
+                    <span className="routine-step__number">{step.number}</span>
+                    <span className="routine-step__icon"><Icon /></span>
+                    <h3>{step.title}</h3>
+                    <p>{step.copy}</p>
+                  </article>
+                )
+              })}
+            </div>
+
+            <div className="routine-callout">
+              <LeafIcon />
+              <p><strong>Não é um conteúdo para estudar durante semanas.</strong> É uma referência para consultar quando surgir a dúvida.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="section inside-section">
+          <div className="container" data-reveal>
+            <div className="section-heading">
+              <span className="eyebrow">VEJA O QUE EXISTE DENTRO</span>
+              <h2>Ferramentas que você consegue abrir, consultar e usar.</h2>
+              <p>O conteúdo foi dividido em materiais objetivos para que a informação não fique apenas na teoria.</p>
+            </div>
+
+            <div className="inside-grid">
+              {insideItems.map((item) => {
+                const Icon = item.icon
+                return (
+                  <article className="inside-card" key={item.title}>
+                    <div className="inside-card__top">
+                      <span className="inside-card__icon"><Icon /></span>
+                      <span className="inside-card__kicker">{item.kicker}</span>
+                    </div>
+                    <div className="inside-card__preview" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                    <h3>{item.title}</h3>
+                    <p>{item.copy}</p>
+                  </article>
+                )
+              })}
+            </div>
+
+            <div className="inside-mobile-note">
+              <span><CheckIcon /> Pensado também para consulta pelo celular</span>
+              <p>Abra a referência quando precisar, sem depender de uma experiência feita apenas para desktop.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="section conversion-bridge-section">
+          <div className="container" data-reveal>
+            <div className="conversion-bridge">
+              <span className="eyebrow">PRÓXIMO PASSO</span>
+              <h2>Já entendi. Quero saber o que priorizar.</h2>
+              <p>Responda uma pergunta rápida para continuar para o Prato 10x.</p>
+              <button className="button button--primary conversion-bridge__cta" type="button" onClick={() => scrollToQuiz('long-form-bridge')}>
+                Quero saber o que priorizar <ArrowRightIcon />
+              </button>
+              <small><LockIcon /> 1 pergunta rápida • depois você segue para o acesso ao Prato 10x</small>
+            </div>
           </div>
         </section>
 
