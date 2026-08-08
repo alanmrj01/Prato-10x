@@ -1806,3 +1806,221 @@ summary {
     transition: none;
   }
 }
+
+/* --- Ajuste cirúrgico: nova vitrine visual da seção do produto --- */
+.showcase-mockup {
+  position: relative;
+  min-height: 0;
+  margin-top: 30px;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(160deg, #f7f2e8 0%, #edf2e3 100%);
+  border: 1px solid rgba(65, 109, 47, .12);
+  overflow: hidden;
+}
+
+.showcase-mockup::before {
+  content: '';
+  position: absolute;
+  inset: auto -72px -98px auto;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .48);
+}
+
+.showcase-mockup::after {
+  content: '';
+  position: absolute;
+  inset: -84px auto auto -54px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(232, 220, 201, .42);
+}
+
+.showcase-card {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  padding: 20px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, .86);
+  border: 1px solid rgba(65, 109, 47, .12);
+  box-shadow: 0 18px 36px rgba(55, 69, 52, .09);
+}
+
+.showcase-card__eyebrow {
+  display: inline-flex;
+  margin-bottom: 12px;
+  color: var(--green);
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.showcase-card--guide {
+  background: linear-gradient(145deg, #fffdf9 0%, #f7f2e8 100%);
+}
+
+.showcase-card--guide strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, 2.8rem);
+  line-height: .94;
+  letter-spacing: -.04em;
+  color: var(--deep);
+}
+
+.showcase-card--guide strong em {
+  color: var(--olive);
+  font-style: normal;
+}
+
+.showcase-card--guide p,
+.showcase-card--plan li,
+.showcase-card--plate p {
+  margin: 12px 0 0;
+  color: #43574d;
+  line-height: 1.55;
+}
+
+.showcase-card--plate {
+  background: linear-gradient(145deg, #fefcf8 0%, #fbf7f0 100%);
+  text-align: center;
+}
+
+.showcase-plate {
+  position: relative;
+  width: min(100%, 232px);
+  aspect-ratio: 1;
+  margin: 8px auto 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 16px 28px rgba(58, 70, 50, .12), inset 0 0 0 2px rgba(223, 215, 201, .82);
+}
+
+.showcase-plate::before {
+  content: '';
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: conic-gradient(from 18deg, #d8b36f 0 30%, #7fa45e 30% 63%, #df9359 63% 100%);
+}
+
+.showcase-plate__segment { display: none; }
+
+.showcase-plate__detail {
+  position: absolute;
+  border-radius: 50%;
+  box-shadow: inset 0 -2px 4px rgba(0, 0, 0, .08);
+}
+
+.showcase-plate__detail--one {
+  width: 58px;
+  height: 58px;
+  top: 28%;
+  left: 23%;
+  background: radial-gradient(circle at 30% 30%, #f5d49f 0 35%, #d88f52 36% 100%);
+}
+
+.showcase-plate__detail--two {
+  width: 68px;
+  height: 68px;
+  top: 22%;
+  right: 21%;
+  background: radial-gradient(circle at 35% 35%, #7daf69 0 34%, #557e41 35% 100%);
+}
+
+.showcase-plate__detail--three {
+  width: 62px;
+  height: 62px;
+  bottom: 18%;
+  left: 34%;
+  background: radial-gradient(circle at 35% 35%, #edab63 0 35%, #d2803c 36% 100%);
+}
+
+.showcase-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.showcase-chips span {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #f2ecdf;
+  border: 1px solid rgba(65, 109, 47, .12);
+  color: #32463c;
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+.showcase-card--plan {
+  background: linear-gradient(145deg, #fffdf9 0%, #f4ebdd 100%);
+}
+
+.showcase-card--plan strong {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 7vw, 2.7rem);
+  color: var(--green);
+}
+
+.showcase-card--plan ul {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.showcase-card--plan li {
+  position: relative;
+  padding-left: 22px;
+  margin: 0;
+}
+
+.showcase-card--plan li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  top: -1px;
+  color: var(--green);
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+@media (min-width: 768px) {
+  .showcase-mockup {
+    grid-template-columns: .92fr 1.08fr .92fr;
+    align-items: end;
+    gap: 18px;
+    padding: 24px;
+  }
+
+  .showcase-card--guide {
+    min-height: 285px;
+    transform: rotate(-4deg);
+  }
+
+  .showcase-card--plate {
+    min-height: 345px;
+  }
+
+  .showcase-card--plan {
+    min-height: 285px;
+    transform: rotate(4deg);
+  }
+}
+
+@media (min-width: 1000px) {
+  .showcase-mockup {
+    max-width: 960px;
+    margin-inline: auto;
+  }
+}

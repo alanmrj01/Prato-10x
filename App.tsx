@@ -228,7 +228,7 @@ function HeroVisual() {
       <span className="leaf leaf--one" aria-hidden="true"><LeafIcon /></span>
       <span className="leaf leaf--two" aria-hidden="true"><LeafIcon /></span>
       <div className="hero-visual__halo" />
-      <img src="/prato10x-hero-mockup.webp" alt="Refeição equilibrada com frango, arroz, feijão, vegetais e acompanhamento" width="901" height="685" fetchPriority="high" />
+      <img src="/prato10x-hero-mockup.webp" alt="Livro Prato 10x, celular com matriz de refeições e uma tigela de comida" width="901" height="685" fetchPriority="high" />
       <span className="hero-visual__badge hero-visual__badge--one">Priorize</span>
       <span className="hero-visual__badge hero-visual__badge--two">Combine</span>
       <span className="hero-visual__badge hero-visual__badge--three">Prepare</span>
@@ -395,7 +395,7 @@ export default function App() {
                 <span><ClockIcon /> Acesso imediato</span>
               </div>
               <button className="button button--primary hero__cta" type="button" onClick={() => scrollToQuiz('hero')}>
-                Quero montar minhas refeições com mais direção <ArrowRightIcon />
+                Quero montar meu prato com mais direção <ArrowRightIcon />
               </button>
               <p className="hero__micro"><LockIcon /> 1 pergunta • depois você segue para o acesso ao Prato 10x</p>
             </div>
@@ -448,7 +448,7 @@ export default function App() {
             </div>
             <blockquote className="method-quote">Você não precisa transformar cada refeição em uma lista de regras. Precisa de uma referência clara para saber o que priorizar quando decide comer menos.</blockquote>
             <button className="button button--primary section-cta" type="button" onClick={() => scrollToQuiz('method')}>
-              Quero uma referência simples para o dia a dia <ArrowRightIcon />
+              Quero aplicar isso nas minhas refeições <ArrowRightIcon />
             </button>
           </div>
         </section>
@@ -486,10 +486,39 @@ export default function App() {
               </div>
             </div>
 
-            <div className="showcase-mockup" aria-label="Prévia dos materiais do Prato 10x">
-              <div className="showcase-phone"><span>PRATO</span><strong>10X</strong><small>Matriz de refeições</small></div>
-              <div className="showcase-book"><span>MAPA DE OPÇÕES PRÁTICAS</span><div className="mini-grid">{Array.from({ length: 12 }).map((_, index) => <i key={index} />)}</div></div>
-              <div className="showcase-planner"><span>PLANO DE APLICAÇÃO</span><strong>30 DIAS</strong></div>
+            <div className="showcase-mockup" aria-label="Prévia mais clara dos materiais do Prato 10x">
+              <article className="showcase-card showcase-card--guide">
+                <span className="showcase-card__eyebrow">GUIA VISUAL</span>
+                <strong>PRATO <em>10X</em></strong>
+                <p>Um guia prático para priorizar melhor proteínas, vegetais e complementos.</p>
+              </article>
+
+              <article className="showcase-card showcase-card--plate">
+                <span className="showcase-card__eyebrow">PRIORIDADES NO PRATO</span>
+                <div className="showcase-plate" aria-hidden="true">
+                  <span className="showcase-plate__segment showcase-plate__segment--protein" />
+                  <span className="showcase-plate__segment showcase-plate__segment--vegetable" />
+                  <span className="showcase-plate__segment showcase-plate__segment--complement" />
+                  <i className="showcase-plate__detail showcase-plate__detail--one" />
+                  <i className="showcase-plate__detail showcase-plate__detail--two" />
+                  <i className="showcase-plate__detail showcase-plate__detail--three" />
+                </div>
+                <div className="showcase-chips">
+                  <span>Proteínas</span>
+                  <span>Vegetais</span>
+                  <span>Complementos</span>
+                </div>
+              </article>
+
+              <article className="showcase-card showcase-card--plan">
+                <span className="showcase-card__eyebrow">PLANO DE APLICAÇÃO</span>
+                <strong>30 dias</strong>
+                <ul>
+                  <li>Mais direção nas escolhas</li>
+                  <li>Menos improviso na rotina</li>
+                  <li>Consulta rápida pelo celular</li>
+                </ul>
+              </article>
             </div>
           </div>
         </section>
@@ -660,10 +689,10 @@ export default function App() {
           <div className="container" data-reveal>
             <div className="conversion-bridge">
               <span className="eyebrow">PRÓXIMO PASSO</span>
-              <h2>Já entendi. Quero saber o que priorizar.</h2>
+              <h2>Já entendi. Agora quero descobrir minhas prioridades.</h2>
               <p>Responda uma pergunta rápida para continuar para o Prato 10x.</p>
               <button className="button button--primary conversion-bridge__cta" type="button" onClick={() => scrollToQuiz('long-form-bridge')}>
-                Quero levar o Prato 10X para minha rotina <ArrowRightIcon />
+                Quero descobrir minhas prioridades <ArrowRightIcon />
               </button>
               <small><LockIcon /> 1 pergunta rápida • depois você segue para o acesso ao Prato 10x</small>
             </div>
@@ -700,7 +729,7 @@ export default function App() {
             <div className="section-heading">
               <span className="eyebrow">DÚVIDAS FREQUENTES</span>
               <h2>Antes de fazer o quiz.</h2>
-              <button className="text-link" type="button" onClick={() => scrollToQuiz('faq')}>Quero começar com mais direção <ArrowRightIcon /></button>
+              <button className="text-link" type="button" onClick={() => scrollToQuiz('faq')}>Ir para a pergunta rápida <ArrowRightIcon /></button>
             </div>
             <div className="faq-list">
               {faqs.map((faq) => (
