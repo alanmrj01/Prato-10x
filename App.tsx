@@ -18,7 +18,7 @@ import {
   TargetIcon,
 } from './Icons'
 import { Quiz } from './Quiz'
-import { trackEvent } from './analytics'
+import { initializeBehaviorTracking, trackEvent } from './analytics'
 import { useReveal } from './useReveal'
 import './styles.css'
 
@@ -297,6 +297,8 @@ export default function App() {
   const [activeSection, setActiveSection] = useState('top')
   useReveal()
 
+  useEffect(() => initializeBehaviorTracking(), [])
+
   useEffect(() => {
     function updateHeaderState() {
       setScrolled(window.scrollY > 18)
@@ -355,7 +357,7 @@ export default function App() {
             <button className={activeSection === 'produto' ? 'is-active' : undefined} aria-current={activeSection === 'produto' ? 'location' : undefined} type="button" onClick={() => navigateTo('produto')}>O que você recebe</button>
             <button className={activeSection === 'quiz' ? 'is-active' : undefined} aria-current={activeSection === 'quiz' ? 'location' : undefined} type="button" onClick={() => scrollToQuiz('header-nav')}>Quiz</button>
           </nav>
-          <button className="header-quiz" type="button" onClick={() => scrollToQuiz('header')}>Começar agora</button>
+          <button id="cta-header" className="header-quiz" type="button" onClick={() => scrollToQuiz('header')}>Começar agora</button>
           <button
             className="menu-toggle"
             type="button"
@@ -376,7 +378,7 @@ export default function App() {
       </header>
 
       <main>
-        <section className="hero" id="top">
+        <section className="hero" id="top" data-track-section="hero">
           <div className="hero__shape hero__shape--sage" aria-hidden="true" />
           <div className="hero__shape hero__shape--peach" aria-hidden="true" />
           <div className="container hero__grid">
@@ -394,7 +396,7 @@ export default function App() {
                 <span><BagIcon /> Lista prática</span>
                 <span><ClockIcon /> Acesso imediato</span>
               </div>
-              <button className="button button--primary hero__cta" type="button" onClick={() => scrollToQuiz('hero')}>
+              <button id="cta-hero" className="button button--primary hero__cta" type="button" onClick={() => scrollToQuiz('hero')}>
                 Quero montar meu prato com mais direção <ArrowRightIcon />
               </button>
               <p className="hero__micro"><LockIcon /> 1 pergunta • depois você segue para o acesso ao Prato 10x</p>
@@ -403,7 +405,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section pain-section" id="problema">
+        <section className="section pain-section" id="problema" data-track-section="problema">
           <div className="container pain-layout" data-reveal>
             <div className="section-heading section-heading--center">
               <span className="eyebrow">O DESAFIO COMEÇA QUANDO VOCÊ PASSA A COMER MENOS</span>
@@ -423,7 +425,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section method-section" id="metodo">
+        <section className="section method-section" id="metodo" data-track-section="metodo">
           <div className="container" data-reveal>
             <div className="section-heading section-heading--center">
               <span className="eyebrow">COMO O PRATO 10X AJUDA</span>
@@ -447,13 +449,13 @@ export default function App() {
               })}
             </div>
             <blockquote className="method-quote">Você não precisa transformar cada refeição em uma lista de regras. Precisa de uma referência clara para saber o que priorizar quando decide comer menos.</blockquote>
-            <button className="button button--primary section-cta" type="button" onClick={() => scrollToQuiz('method')}>
+            <button id="cta-metodo" className="button button--primary section-cta" type="button" onClick={() => scrollToQuiz('method')}>
               Quero aplicar isso nas minhas refeições <ArrowRightIcon />
             </button>
           </div>
         </section>
 
-        <section className="section product-section" id="produto">
+        <section className="section product-section" id="produto" data-track-section="produto">
           <div className="container" data-reveal>
             <div className="section-heading">
               <span className="eyebrow">O QUE VOCÊ RECEBE</span>
@@ -523,7 +525,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section transformation-section">
+        <section className="section transformation-section" id="transformacao" data-track-section="transformacao">
           <div className="container" data-reveal>
             <div className="section-heading section-heading--center">
               <span className="eyebrow">DA IMPROVISAÇÃO PARA A CLAREZA</span>
@@ -557,7 +559,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section use-cases-section">
+        <section className="section use-cases-section" id="duvidas-praticas" data-track-section="duvidas_praticas">
           <div className="container" data-reveal>
             <div className="section-heading section-heading--center">
               <span className="eyebrow">NA PRÁTICA</span>
@@ -585,7 +587,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section reference-section">
+        <section className="section reference-section" id="referencia" data-track-section="referencia">
           <div className="container reference-layout" data-reveal>
             <div className="section-heading">
               <span className="eyebrow">UMA REFERÊNCIA, NÃO MAIS REGRAS</span>
@@ -619,7 +621,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section routine-section">
+        <section className="section routine-section" id="rotina" data-track-section="rotina">
           <div className="container" data-reveal>
             <div className="section-heading section-heading--center">
               <span className="eyebrow">COMO USAR NO DIA A DIA</span>
@@ -648,7 +650,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section inside-section">
+        <section className="section inside-section" id="conteudo" data-track-section="conteudo">
           <div className="container" data-reveal>
             <div className="section-heading">
               <span className="eyebrow">VEJA O QUE EXISTE DENTRO</span>
@@ -685,13 +687,13 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section conversion-bridge-section">
+        <section className="section conversion-bridge-section" id="proximo-passo" data-track-section="proximo_passo">
           <div className="container" data-reveal>
             <div className="conversion-bridge">
               <span className="eyebrow">PRÓXIMO PASSO</span>
               <h2>Já entendi. Agora quero descobrir minhas prioridades.</h2>
               <p>Responda uma pergunta rápida para continuar para o Prato 10x.</p>
-              <button className="button button--primary conversion-bridge__cta" type="button" onClick={() => scrollToQuiz('long-form-bridge')}>
+              <button id="cta-proximo-passo" className="button button--primary conversion-bridge__cta" type="button" onClick={() => scrollToQuiz('long-form-bridge')}>
                 Quero descobrir minhas prioridades <ArrowRightIcon />
               </button>
               <small><LockIcon /> 1 pergunta rápida • depois você segue para o acesso ao Prato 10x</small>
@@ -701,7 +703,7 @@ export default function App() {
 
         <Quiz />
 
-        <section className="section audience-section">
+        <section className="section audience-section" id="para-quem" data-track-section="para_quem">
           <div className="container audience-layout" data-reveal>
             <article className="audience-card">
               <span className="eyebrow">PARA QUEM É</span>
@@ -724,7 +726,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section faq-section">
+        <section className="section faq-section" id="faq" data-track-section="faq">
           <div className="container faq-layout" data-reveal>
             <div className="section-heading">
               <span className="eyebrow">DÚVIDAS FREQUENTES</span>
@@ -742,7 +744,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="disclaimer">
+        <section className="disclaimer" id="aviso-educacional" data-track-section="aviso_educacional">
           <div className="container disclaimer__inner">
             <BookIcon />
             <div><strong>Material educativo</strong><p>O Prato 10x é um produto educacional de organização da rotina alimentar. Não substitui diagnóstico, consulta, prescrição ou acompanhamento médico e nutricional.</p></div>

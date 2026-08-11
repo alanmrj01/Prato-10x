@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { isCheckoutConfigured, siteConfig } from './config'
 import { getUtmParameters, trackEvent } from './analytics'
 import {
@@ -62,6 +62,7 @@ export function Quiz() {
   const [selectedId, setSelectedId] = useState('')
   const [status, setStatus] = useState<SubmitStatus>('idle')
   const [failedAttempts, setFailedAttempts] = useState(0)
+  const quizStartedRef = useRef(false)
 
   const selected = useMemo(
     () => quizOptions.find((option) => option.id === selectedId),
@@ -72,20 +73,30 @@ export function Quiz() {
     setSelectedId(option.id)
     setStatus('idle')
 
-    trackEvent('quiz_answered', {
-      answer: option.id,
-      answer_label: option.label,
+    if (!quizStartedRef.current) {
+      quizStartedRef.current = true
+      trackEvent('quiz_start', { total_steps: 1 })
+    }
+
+    trackEvent('quiz_step', {
+      step_number: 1,
+      total_steps: 1,
     })
+
+    // Mantido para compatibilidade com futuras regras do GTM, sem enviar a resposta escolhida.
+    trackEvent('quiz_answered', { step_number: 1 })
   }
 
   function openCheckout(buttonLocation: CheckoutButtonLocation) {
     if (!selected) return
 
     trackEvent('checkout_clicked', {
-      quiz_answer: selected.id,
-      result_type: selected.id,
       button_location: buttonLocation,
-      ...getUtmParameters(),
+    })
+
+    trackEvent('checkout_click', {
+      button_location: buttonLocation,
+      checkout_provider: 'kiwify',
     })
 
     if (!isCheckoutConfigured()) {
@@ -133,9 +144,11 @@ export function Quiz() {
       setStatus('success')
 
       trackEvent('quiz_submitted', {
-        answer: selected.id,
-        answer_label: selected.label,
         submit_status: 'success',
+      })
+
+      trackEvent('quiz_complete', {
+        total_steps: 1,
       })
 
       /*
@@ -153,8 +166,6 @@ export function Quiz() {
       setStatus('error')
 
       trackEvent('quiz_submitted', {
-        answer: selected.id,
-        answer_label: selected.label,
         submit_status: 'error',
       })
     }
@@ -172,6 +183,7 @@ export function Quiz() {
     <section
       className="section quiz-section"
       id="quiz"
+      data-track-section="quiz"
       data-reveal
     >
       <div className="container quiz-panel">
@@ -222,7 +234,27 @@ export function Quiz() {
           })}
         </div>
 
+        <div
+          className="quiz-offer-summary"
+          id="oferta"
+          data-track-once="offer_view"
+        >
+          <div className="quiz-offer-summary__copy">
+            <span>Acesso completo ao Prato 10x</span>
+            <small>Guia visual + materiais práticos para consulta no celular</small>
+          </div>
+          <div
+            className="quiz-offer-summary__price"
+            id="preco"
+            data-track-once="price_view"
+          >
+            <strong>{siteConfig.price}</strong>
+            <small>Pagamento único</small>
+          </div>
+        </div>
+
         <button
+          id="cta-checkout"
           className="button button--primary quiz-submit"
           type="button"
           onClick={() => void submitQuiz()}
@@ -314,6 +346,7 @@ export function Quiz() {
               </ul>
 
               <button
+                id="cta-checkout-fallback"
                 type="button"
                 className="button button--primary"
                 onClick={() => openCheckout('quiz-result')}

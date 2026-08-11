@@ -2024,3 +2024,78 @@ summary {
     margin-inline: auto;
   }
 }
+
+/* ================================================================
+   Oferta visível antes do checkout + ponto estável de mensuração.
+   Mantido isolado para não alterar o restante do layout validado.
+   ================================================================ */
+.quiz-offer-summary {
+  margin-top: 20px;
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid rgba(65, 109, 47, .22);
+  border-radius: 18px;
+  background: #f3f5e9;
+}
+
+.quiz-offer-summary__copy {
+  min-width: 0;
+}
+
+.quiz-offer-summary__copy > span {
+  display: block;
+  color: var(--deep);
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.quiz-offer-summary__copy small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.quiz-offer-summary__price {
+  min-width: 118px;
+  padding-left: 18px;
+  border-left: 1px solid rgba(65, 109, 47, .18);
+  text-align: right;
+}
+
+.quiz-offer-summary__price strong {
+  display: block;
+  color: var(--deep);
+  font-size: clamp(1.7rem, 5vw, 2.25rem);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.quiz-offer-summary__price small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: .72rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .quiz-offer-summary {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .quiz-offer-summary__price {
+    min-width: 0;
+    padding: 12px 0 0;
+    border-left: 0;
+    border-top: 1px solid rgba(65, 109, 47, .18);
+    text-align: center;
+  }
+}
+
