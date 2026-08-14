@@ -4,6 +4,8 @@ const files = [
   'favicon.svg',
   'og-prato10x.jpg',
   'prato10x-hero-mockup.webp',
+  'prato10x-hero-mobile-720.webp',
+  'prato10x-hero-mobile-1200.webp',
   'privacidade.html',
   'termos.html',
 ]

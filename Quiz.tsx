@@ -1,131 +1,121 @@
 import { useMemo, useRef, useState } from 'react'
-import { isCheckoutConfigured, siteConfig } from './config'
-import { getUtmParameters, trackEvent } from './analytics'
-import {
-  ArrowRightIcon,
-  BagIcon,
-  BowlIcon,
-  CheckIcon,
-  ClockIcon,
-  LockIcon,
-  QuestionIcon,
-} from './Icons'
+import { openCheckout, getUtmParameters, trackEvent } from './analytics'
+import { siteConfig } from './config'
+import { ArrowRightIcon, CheckIcon, LockIcon } from './Icons'
 
+type QuizAnswer = 'yes' | 'no'
 type SubmitStatus = 'idle' | 'sending' | 'success' | 'error'
 
-type CheckoutButtonLocation = 'quiz-submit' | 'quiz-result'
-
-type QuizOption = {
-  id: string
-  label: string
-  icon: typeof ClockIcon
-  resultTitle: string
-  resultText: string
+type QuizQuestion = {
+  id: `q${number}`
+  question: string
+  yesLabel: string
+  noLabel: string
 }
 
-const quizOptions: QuizOption[] = [
+const quizQuestions: QuizQuestion[] = [
   {
-    id: 'Pulo Refeições',
-    label: 'Acabo pulando refeições sem planejar.',
-    icon: ClockIcon,
-    resultTitle: 'Sua rotina está ficando sem uma referência clara.',
-    resultText:
-      'Quando você está comendo menos, deixar cada decisão para a última hora aumenta o improviso. O Prato 10x ajuda a definir opções antecipadamente para dar mais direção à rotina.',
+    id: 'q1',
+    question:
+      'Quando você está comendo menos, já olha para o prato e pensa: “o que eu deveria colocar aqui para essa refeição fazer mais sentido?”',
+    yesLabel: 'Sim, isso acontece comigo',
+    noLabel: 'Não, normalmente sei o que escolher',
   },
   {
-    id: 'Escolho o Mais Fácil',
-    label: 'Como pouco e escolho apenas o que estiver mais fácil.',
-    icon: BowlIcon,
-    resultTitle: 'O mais fácil está decidindo por você.',
-    resultText:
-      'Quando você está comendo menos, a praticidade pesa ainda mais nas escolhas. O Prato 10x ajuda a manter opções simples e mais bem planejadas disponíveis para esses momentos.',
+    id: 'q2',
+    question:
+      'Nos dias corridos, você acaba escolhendo apenas o que estiver mais fácil porque não quer pensar muito na refeição?',
+    yesLabel: 'Sim, acontece com frequência',
+    noLabel: 'Não, costumo me organizar antes',
   },
   {
-    id: 'Não sei Priorizar',
-    label: 'Não sei o que priorizar em refeições menores.',
-    icon: QuestionIcon,
-    resultTitle: 'Sua maior dificuldade está em saber o que merece espaço.',
-    resultText:
-      'Quando cabe menos comida, cada escolha ganha mais importância. O Prato 10x apresenta uma referência visual para organizar refeições menores com mais intenção.',
+    id: 'q3',
+    question:
+      'Quando cabe menos comida, você sente dificuldade em decidir o que deveria entrar primeiro no prato?',
+    yesLabel: 'Sim, essa é uma dúvida real',
+    noLabel: 'Não, isso está claro para mim',
   },
   {
-    id: 'Faltam Opções Práticas',
-    label: 'Faltam opções práticas para os dias corridos.',
-    icon: BagIcon,
-    resultTitle: 'Sua rotina precisa de opções que funcionem nos dias reais.',
-    resultText:
-      'Não basta saber o que seria ideal. É necessário ter alternativas possíveis para os dias corridos. O Prato 10x ajuda a organizar compras e opções práticas antes que a rotina fique apertada.',
+    id: 'q4',
+    question:
+      'Ter uma referência visual pronta no celular ajudaria você na hora de montar uma refeição menor?',
+    yesLabel: 'Sim, eu consultaria',
+    noLabel: 'Não faria diferença para mim',
+  },
+  {
+    id: 'q5',
+    question:
+      'Algumas combinações práticas já organizadas ajudariam você a depender menos do improviso?',
+    yesLabel: 'Sim, facilitaria bastante',
+    noLabel: 'Não, prefiro decidir na hora',
+  },
+  {
+    id: 'q6',
+    question:
+      'Um plano simples de 30 dias ajudaria você a transformar essas escolhas em uma rotina mais consistente?',
+    yesLabel: 'Sim, gosto de ter um caminho',
+    noLabel: 'Não preciso de um plano',
+  },
+  {
+    id: 'q7',
+    question:
+      'Se você tivesse uma ferramenta visual para consultar sempre que surgisse essa dúvida, usaria no dia a dia?',
+    yesLabel: 'Sim, eu usaria',
+    noLabel: 'Não seria útil para mim',
   },
 ]
 
+function resultCopy(score: number) {
+  if (score >= 5) {
+    return {
+      title: 'Você se identificou com a situação que o Prato 10x foi criado para organizar.',
+      text: 'Sua resposta mostra que a dúvida, o improviso ou a falta de uma referência aparecem em vários momentos da rotina. O Prato 10x foi estruturado justamente para tornar essas decisões mais visuais e fáceis de consultar.',
+    }
+  }
+
+  if (score >= 3) {
+    return {
+      title: 'Algumas dessas situações já aparecem na sua rotina.',
+      text: 'Você não precisa ter dificuldade em todas as refeições para se beneficiar de uma referência prática. A proposta do Prato 10x é estar disponível justamente nos momentos em que a dúvida aparece.',
+    }
+  }
+
+  return {
+    title: 'Sua rotina parece ter menos improviso hoje.',
+    text: 'Mesmo assim, você pode conhecer a referência visual antes de decidir se ela faria sentido para os momentos em que surgir alguma dúvida. O quiz é apenas uma ferramenta de identificação, não um diagnóstico.',
+  }
+}
+
 export function Quiz() {
-  const [selectedId, setSelectedId] = useState('')
+  const [answers, setAnswers] = useState<Record<string, QuizAnswer>>({})
+  const [step, setStep] = useState(0)
+  const [completed, setCompleted] = useState(false)
   const [status, setStatus] = useState<SubmitStatus>('idle')
-  const [failedAttempts, setFailedAttempts] = useState(0)
   const quizStartedRef = useRef(false)
 
-  const selected = useMemo(
-    () => quizOptions.find((option) => option.id === selectedId),
-    [selectedId],
+  const score = useMemo(
+    () => Object.values(answers).filter((answer) => answer === 'yes').length,
+    [answers],
   )
 
-  function choose(option: QuizOption) {
-    setSelectedId(option.id)
-    setStatus('idle')
+  const result = useMemo(() => resultCopy(score), [score])
+  const currentQuestion = quizQuestions[step]
+  const progress = completed ? 100 : ((step + 1) / quizQuestions.length) * 100
 
-    if (!quizStartedRef.current) {
-      quizStartedRef.current = true
-      trackEvent('quiz_start', { total_steps: 1 })
-    }
-
-    trackEvent('quiz_step', {
-      step_number: 1,
-      total_steps: 1,
-    })
-
-    // Mantido para compatibilidade com futuras regras do GTM, sem enviar a resposta escolhida.
-    trackEvent('quiz_answered', { step_number: 1 })
-  }
-
-  function openCheckout(buttonLocation: CheckoutButtonLocation) {
-    if (!selected) return
-
-    trackEvent('checkout_clicked', {
-      button_location: buttonLocation,
-    })
-
-    trackEvent('checkout_click', {
-      button_location: buttonLocation,
-      checkout_provider: 'kiwify',
-    })
-
-    if (!isCheckoutConfigured()) {
-      console.warn(
-        'Configure o link de checkout do Prato 10x em src/config.ts.',
-      )
-
-      alert(
-        'O checkout será liberado em breve. Configure o link em src/config.ts antes de publicar.',
-      )
-
-      return
-    }
-
-    window.location.href = siteConfig.checkoutUrl
-  }
-
-  async function submitQuiz() {
-    if (!selected || status === 'sending') return
-
+  async function submitAnswers(nextAnswers: Record<string, QuizAnswer>) {
     setStatus('sending')
+
+    const nextScore = Object.values(nextAnswers).filter(
+      (answer) => answer === 'yes',
+    ).length
 
     const payload = new URLSearchParams({
       'form-name': siteConfig.quizFormName,
-      answer: selected.id,
-      answer_label: selected.label,
       page_version: siteConfig.pageVersion,
       timestamp: new Date().toISOString(),
+      score: String(nextScore),
       ...getUtmParameters(),
+      ...nextAnswers,
     })
 
     try {
@@ -142,42 +132,84 @@ export function Quiz() {
       }
 
       setStatus('success')
-
       trackEvent('quiz_submitted', {
         submit_status: 'success',
+        affirmative_answers: nextScore,
+        total_steps: quizQuestions.length,
       })
-
-      trackEvent('quiz_complete', {
-        total_steps: 1,
-      })
-
-      /*
-       * Depois que a Netlify confirma o registro da resposta,
-       * o visitante é enviado diretamente ao checkout.
-       */
-      openCheckout('quiz-submit')
     } catch (error) {
-      console.error(
-        'Não foi possível registrar a resposta do quiz.',
-        error,
-      )
-
-      setFailedAttempts((value) => value + 1)
+      console.error('Não foi possível registrar o quiz.', error)
       setStatus('error')
-
       trackEvent('quiz_submitted', {
         submit_status: 'error',
+        affirmative_answers: nextScore,
+        total_steps: quizQuestions.length,
       })
     }
   }
 
-  /*
-   * O resultado abaixo funciona como contingência.
-   * Se o envio falhar duas vezes, o visitante ainda poderá
-   * acessar manualmente o checkout.
-   */
-  const canShowResult =
-    status === 'error' && failedAttempts >= 2
+  function answerQuestion(value: QuizAnswer) {
+    if (!currentQuestion || completed) return
+
+    if (!quizStartedRef.current) {
+      quizStartedRef.current = true
+      trackEvent('quiz_start', { total_steps: quizQuestions.length })
+    }
+
+    const nextAnswers = {
+      ...answers,
+      [currentQuestion.id]: value,
+    }
+
+    setAnswers(nextAnswers)
+
+    trackEvent('quiz_step', {
+      step_number: step + 1,
+      total_steps: quizQuestions.length,
+    })
+
+    trackEvent('quiz_answered', {
+      step_number: step + 1,
+      total_steps: quizQuestions.length,
+      answer_value: value,
+    })
+
+    if (step < quizQuestions.length - 1) {
+      setStep((current) => current + 1)
+      return
+    }
+
+    const nextScore = Object.values(nextAnswers).filter(
+      (answer) => answer === 'yes',
+    ).length
+
+    setCompleted(true)
+    trackEvent('quiz_complete', {
+      total_steps: quizQuestions.length,
+      affirmative_answers: nextScore,
+    })
+    void submitAnswers(nextAnswers)
+  }
+
+  function goBack() {
+    if (completed) {
+      setCompleted(false)
+      setStep(quizQuestions.length - 1)
+      setStatus('idle')
+      return
+    }
+
+    if (step > 0) setStep((current) => current - 1)
+  }
+
+  function restart() {
+    setAnswers({})
+    setStep(0)
+    setCompleted(false)
+    setStatus('idle')
+    quizStartedRef.current = false
+    trackEvent('quiz_restarted')
+  }
 
   return (
     <section
@@ -188,178 +220,105 @@ export function Quiz() {
     >
       <div className="container quiz-panel">
         <div className="quiz-panel__heading">
-          <span className="eyebrow">
-            QUIZ RÁPIDO — UMA PERGUNTA
-          </span>
-
-          <h2>
-            O que mais dificulta suas refeições quando você está
-            comendo menos?
-          </h2>
+          <span className="eyebrow">QUIZ DE IDENTIFICAÇÃO • 7 PERGUNTAS</span>
+          <h2>Veja se essa situação realmente parece com a sua.</h2>
+          <p>
+            Leva menos de um minuto. O quiz é opcional e não bloqueia o acesso ao
+            Prato 10x.
+          </p>
         </div>
 
-        <div
-          className="quiz-list"
-          role="radiogroup"
-          aria-label="Dificuldade principal com a alimentação"
-        >
-          {quizOptions.map((option) => {
-            const Icon = option.icon
-            const active = selectedId === option.id
+        <div className="quiz-progress" aria-label={`Progresso do quiz: ${Math.round(progress)}%`}>
+          <span style={{ width: `${progress}%` }} />
+        </div>
 
-            return (
+        {!completed && currentQuestion ? (
+          <div className="quiz-question" aria-live="polite">
+            <span className="quiz-question__step">
+              Pergunta {step + 1} de {quizQuestions.length}
+            </span>
+            <h3>{currentQuestion.question}</h3>
+
+            <div className="quiz-binary" role="group" aria-label="Opções de resposta">
               <button
                 type="button"
-                className={`quiz-choice${
-                  active ? ' quiz-choice--active' : ''
-                }`}
-                key={option.id}
-                role="radio"
-                aria-checked={active}
-                onClick={() => choose(option)}
+                className="quiz-binary__option quiz-binary__option--yes"
+                onClick={() => answerQuestion('yes')}
               >
-                <span className="quiz-choice__radio">
-                  {active ? <CheckIcon /> : null}
-                </span>
-
-                <span className="quiz-choice__label">
-                  {option.label}
-                </span>
-
-                <span className="quiz-choice__icon">
-                  <Icon />
-                </span>
+                <span className="quiz-binary__mark"><CheckIcon /></span>
+                <span>{currentQuestion.yesLabel}</span>
               </button>
-            )
-          })}
-        </div>
-
-        <div
-          className="quiz-offer-summary"
-          id="oferta"
-          data-track-once="offer_view"
-        >
-          <div className="quiz-offer-summary__copy">
-            <span>Acesso completo ao Prato 10x</span>
-            <small>Guia visual + materiais práticos para consulta no celular</small>
-          </div>
-          <div
-            className="quiz-offer-summary__price"
-            id="preco"
-            data-track-once="price_view"
-          >
-            <strong>{siteConfig.price}</strong>
-            <small>Pagamento único</small>
-          </div>
-        </div>
-
-        <button
-          id="cta-checkout"
-          className="button button--primary quiz-submit"
-          type="button"
-          onClick={() => void submitQuiz()}
-          disabled={!selected || status === 'sending'}
-        >
-          {status === 'sending'
-            ? 'Registrando resposta...'
-            : 'Quero acessar o Prato 10x'}
-        </button>
-
-        <p className="quiz-privacy">
-          <LockIcon /> Resposta anônima • checkout seguro
-        </p>
-
-        {status === 'error' && !canShowResult && (
-          <div className="quiz-error" role="alert">
-            Não foi possível registrar sua resposta agora. Tente
-            novamente para continuar.
-          </div>
-        )}
-
-        {selected && canShowResult && (
-          <div
-            className="quiz-result"
-            id="quiz-result"
-            aria-live="polite"
-          >
-            <div className="quiz-result__copy">
-              <span className="eyebrow">SEU RESULTADO</span>
-              <h3>{selected.resultTitle}</h3>
-              <p>{selected.resultText}</p>
-            </div>
-
-            <div
-              className="plate-map"
-              aria-label="Ilustração visual de um prato dividido em prioridades"
-            >
-              <span className="plate-map__segment plate-map__segment--one">
-                Vegetais
-              </span>
-
-              <span className="plate-map__segment plate-map__segment--two">
-                Proteínas
-              </span>
-
-              <span className="plate-map__segment plate-map__segment--three">
-                Complementos
-              </span>
-            </div>
-
-            <div className="offer-card">
-              <span className="eyebrow">
-                ACESSO AO PRATO 10X
-              </span>
-
-              <h3>
-                Transforme refeições menores em escolhas mais bem
-                planejadas.
-              </h3>
-
-              <strong className="offer-card__price">
-                {siteConfig.price}
-              </strong>
-
-              <ul>
-                <li>
-                  <CheckIcon /> Guia visual
-                </li>
-
-                <li>
-                  <CheckIcon /> Matriz de refeições menores
-                </li>
-
-                <li>
-                  <CheckIcon /> Mapa de opções práticas
-                </li>
-
-                <li>
-                  <CheckIcon /> Plano de aplicação por 30 dias
-                </li>
-
-                <li>
-                  <CheckIcon /> Lista de compras editável
-                </li>
-
-                <li>
-                  <CheckIcon /> Versão para celular
-                </li>
-              </ul>
-
               <button
-                id="cta-checkout-fallback"
+                type="button"
+                className="quiz-binary__option"
+                onClick={() => answerQuestion('no')}
+              >
+                <span className="quiz-binary__mark">×</span>
+                <span>{currentQuestion.noLabel}</span>
+              </button>
+            </div>
+
+            <div className="quiz-question__footer">
+              {step > 0 ? (
+                <button type="button" className="quiz-back" onClick={goBack}>
+                  Voltar
+                </button>
+              ) : (
+                <span />
+              )}
+              <span>Escolha uma opção para avançar</span>
+            </div>
+          </div>
+        ) : (
+          <div className="quiz-result quiz-result--compact" aria-live="polite">
+            <span className="eyebrow">SEU RESULTADO</span>
+            <h3>{result.title}</h3>
+            <p>{result.text}</p>
+
+            <div className="quiz-result__score">
+              <strong>{score}</strong>
+              <span>de 7 situações fizeram sentido para você</span>
+            </div>
+
+            <div className="quiz-result__actions">
+              <button
                 type="button"
                 className="button button--primary"
                 onClick={() => openCheckout('quiz-result')}
               >
-                Quero acessar o Prato 10x <ArrowRightIcon />
+                Quero acessar o Prato 10x — {siteConfig.price} <ArrowRightIcon />
               </button>
-
-              <small>
-                <LockIcon /> Pagamento único • acesso digital
-              </small>
+              <button type="button" className="quiz-restart" onClick={restart}>
+                Refazer o quiz
+              </button>
             </div>
+
+            <small className={`quiz-save-status quiz-save-status--${status}`}>
+              {status === 'sending' && 'Salvando sua resposta anônima…'}
+              {status === 'success' && 'Resposta anônima registrada.'}
+              {status === 'error' && 'Não foi possível registrar agora, mas isso não bloqueia seu acesso.'}
+              {status === 'idle' && 'Resposta anônima.'}
+            </small>
           </div>
         )}
+
+        <div className="quiz-direct-access">
+          <div>
+            <strong>Já sabe que quer o material?</strong>
+            <span>Você não precisa terminar o quiz para comprar.</span>
+          </div>
+          <button
+            type="button"
+            className="button button--secondary"
+            onClick={() => openCheckout('quiz-direct')}
+          >
+            Ir direto ao acesso <ArrowRightIcon />
+          </button>
+        </div>
+
+        <p className="quiz-privacy">
+          <LockIcon /> Respostas anônimas • não é diagnóstico • checkout seguro
+        </p>
       </div>
     </section>
   )

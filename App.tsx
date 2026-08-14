@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Brand } from './Brand'
 import {
   ArrowRightIcon,
@@ -18,7 +18,7 @@ import {
   TargetIcon,
 } from './Icons'
 import { Quiz } from './Quiz'
-import { initializeBehaviorTracking, trackEvent } from './analytics'
+import { initializeBehaviorTracking, openCheckout, trackEvent } from './analytics'
 import { useReveal } from './useReveal'
 import './styles.css'
 
@@ -45,8 +45,8 @@ const methodSteps = [
 
 const productItems = [
   {
-    title: 'Guia visual Prato 10x',
-    copy: 'Explicações simples para organizar melhor suas escolhas nos dias em que você está comendo menos.',
+    title: 'Guia visual de refeições menores',
+    copy: 'Uma referência visual para abrir no celular quando surgir a dúvida sobre o que priorizar no prato.',
     icon: BookIcon,
     art: 'book',
   },
@@ -145,7 +145,7 @@ const insideItems = [
 const faqs = [
   {
     question: 'O Prato 10x é uma dieta?',
-    answer: 'Não. É um método educacional de organização alimentar. Ele não prescreve quantidades, calorias ou um plano alimentar individualizado.',
+    answer: 'Não. É um material educacional de organização alimentar. Ele não prescreve quantidades, calorias ou um plano alimentar individualizado.',
   },
   {
     question: 'Receberei receitas?',
@@ -171,68 +171,26 @@ function scrollToQuiz(source: string) {
 }
 
 function HeroVisual() {
-  const visualRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const visual = visualRef.current
-    const finePointer = window.matchMedia('(pointer: fine)')
-
-    if (!visual || !finePointer.matches) return
-
-    let animationFrame = 0
-
-    function applyPointerPosition(event: PointerEvent) {
-      const bounds = visual!.getBoundingClientRect()
-      const x = (event.clientX - bounds.left) / bounds.width - 0.5
-      const y = (event.clientY - bounds.top) / bounds.height - 0.5
-
-      cancelAnimationFrame(animationFrame)
-      animationFrame = window.requestAnimationFrame(() => {
-        visual!.classList.add('is-interacting')
-        visual!.style.setProperty('--parallax-x', `${x * 12}px`)
-        visual!.style.setProperty('--parallax-y', `${y * 10}px`)
-        visual!.style.setProperty('--depth-x', `${x * -7}px`)
-        visual!.style.setProperty('--depth-y', `${y * -6}px`)
-        visual!.style.setProperty('--tilt-x', `${y * -1.6}deg`)
-        visual!.style.setProperty('--tilt-y', `${x * 2.1}deg`)
-        visual!.style.setProperty('--glow-x', `${50 + x * 24}%`)
-        visual!.style.setProperty('--glow-y', `${46 + y * 20}%`)
-      })
-    }
-
-    function reset() {
-      cancelAnimationFrame(animationFrame)
-      visual!.classList.remove('is-interacting')
-      visual!.style.setProperty('--parallax-x', '0px')
-      visual!.style.setProperty('--parallax-y', '0px')
-      visual!.style.setProperty('--depth-x', '0px')
-      visual!.style.setProperty('--depth-y', '0px')
-      visual!.style.setProperty('--tilt-x', '0deg')
-      visual!.style.setProperty('--tilt-y', '0deg')
-      visual!.style.setProperty('--glow-x', '50%')
-      visual!.style.setProperty('--glow-y', '46%')
-    }
-
-    visual.addEventListener('pointermove', applyPointerPosition)
-    visual.addEventListener('pointerleave', reset)
-
-    return () => {
-      cancelAnimationFrame(animationFrame)
-      visual.removeEventListener('pointermove', applyPointerPosition)
-      visual.removeEventListener('pointerleave', reset)
-    }
-  }, [])
-
   return (
-    <div ref={visualRef} className="hero-visual" aria-label="Prévia visual do Prato 10x">
-      <span className="leaf leaf--one" aria-hidden="true"><LeafIcon /></span>
-      <span className="leaf leaf--two" aria-hidden="true"><LeafIcon /></span>
-      <div className="hero-visual__halo" />
-      <img src="/prato10x-hero-mockup.webp" alt="Livro Prato 10x, celular com matriz de refeições e uma tigela de comida" width="901" height="685" fetchPriority="high" />
-      <span className="hero-visual__badge hero-visual__badge--one">Priorize</span>
-      <span className="hero-visual__badge hero-visual__badge--two">Combine</span>
-      <span className="hero-visual__badge hero-visual__badge--three">Prepare</span>
-    </div>
+    <figure className="hero-visual hero-visual--photo" aria-label="Prato 10x sendo consultado durante uma refeição menor">
+      <picture>
+        <source
+          srcSet="/prato10x-hero-mobile-720.webp 720w, /prato10x-hero-mobile-1200.webp 1200w"
+          sizes="(max-width: 699px) 92vw, 46vw"
+        />
+        <img
+          src="/prato10x-hero-mobile-1200.webp"
+          alt="Mulher em uma cozinha real com uma refeição menor, celular mostrando a referência visual do Prato 10x, guia e plano de 30 dias"
+          width="1200"
+          height="1500"
+          fetchPriority="high"
+        />
+      </picture>
+      <figcaption>
+        <span><GridIcon /> Referência visual no celular</span>
+        <span><CalendarIcon /> Plano de 30 dias</span>
+      </figcaption>
+    </figure>
   )
 }
 
@@ -357,7 +315,7 @@ export default function App() {
             <button className={activeSection === 'produto' ? 'is-active' : undefined} aria-current={activeSection === 'produto' ? 'location' : undefined} type="button" onClick={() => navigateTo('produto')}>O que você recebe</button>
             <button className={activeSection === 'quiz' ? 'is-active' : undefined} aria-current={activeSection === 'quiz' ? 'location' : undefined} type="button" onClick={() => scrollToQuiz('header-nav')}>Quiz</button>
           </nav>
-          <button id="cta-header" className="header-quiz" type="button" onClick={() => scrollToQuiz('header')}>Começar agora</button>
+          <button id="cta-header" className="header-quiz" type="button" onClick={() => openCheckout('header')}>Acessar por R$ 47</button>
           <button
             className="menu-toggle"
             type="button"
@@ -373,7 +331,7 @@ export default function App() {
           <button type="button" onClick={() => navigateTo('problema')}>O problema</button>
           <button type="button" onClick={() => navigateTo('metodo')}>Como funciona</button>
           <button type="button" onClick={() => navigateTo('produto')}>O que você recebe</button>
-          <button type="button" onClick={() => { setMenuOpen(false); scrollToQuiz('mobile-menu') }}>Descobrir minhas prioridades</button>
+          <button type="button" onClick={() => { setMenuOpen(false); openCheckout('mobile-menu') }}>Acessar o Prato 10x — R$ 47</button>
         </div>
       </header>
 
@@ -383,27 +341,42 @@ export default function App() {
           <div className="hero__shape hero__shape--peach" aria-hidden="true" />
           <div className="container hero__grid">
             <div className="hero__copy" data-reveal>
-              <span className="hero__eyebrow">PARA QUEM ESTÁ COMENDO MENOS</span>
+              <span className="hero__eyebrow">GUIA VISUAL • PRÁTICO • ACESSO IMEDIATO</span>
               <h1>
-                <span>Se você está comendo menos para cuidar do peso,</span>
-                <em>você precisa saber</em>
-                <span>o que merece prioridade no seu prato.</span>
+                <span>Está comendo menos</span>
+                <em>e não sabe mais</em>
+                <span>o que colocar no prato?</span>
               </h1>
-              <p className="hero__lead">O Prato 10x é um guia visual para mostrar o que priorizar em refeições menores, com mais equilíbrio, saciedade e direção — sem simplesmente cortar tudo.</p>
+              <p className="hero__lead">O Prato 10x transforma essa dúvida em uma referência visual para consultar no celular: veja o que priorizar, encontre combinações possíveis e dependa menos do improviso.</p>
               <div className="hero__quickfacts" aria-label="O que você recebe com o Prato 10x">
-                <span><CheckIcon /> Guia visual</span>
-                <span><GridIcon /> Matriz de refeições</span>
-                <span><BagIcon /> Lista prática</span>
-                <span><ClockIcon /> Acesso imediato</span>
+                <span><GridIcon /> Matriz visual</span>
+                <span><BowlIcon /> Combinações práticas</span>
+                <span><CalendarIcon /> Plano de 30 dias</span>
+                <span><ClockIcon /> Consulta no celular</span>
               </div>
-              <button id="cta-hero" className="button button--primary hero__cta" type="button" onClick={() => scrollToQuiz('hero')}>
-                Quero montar meu prato com mais direção <ArrowRightIcon />
+              <div className="hero__offer" id="oferta" data-track-once="offer_view">
+                <div className="hero__price" id="preco" data-track-once="price_view">
+                  <strong>R$ 47</strong>
+                  <span>pagamento único</span>
+                </div>
+                <div className="hero__offer-copy">
+                  <strong>Acesso digital imediato</strong>
+                  <span>Guia visual + materiais práticos</span>
+                </div>
+              </div>
+              <button id="cta-hero" className="button button--primary hero__cta" type="button" onClick={() => openCheckout('hero')}>
+                Quero acessar o Prato 10x <ArrowRightIcon />
               </button>
-              <p className="hero__micro"><LockIcon /> 1 pergunta • depois você segue para o acesso ao Prato 10x</p>
+              <button className="hero__quiz-link" type="button" onClick={() => scrollToQuiz('hero-secondary')}>
+                Prefiro fazer o quiz de 7 perguntas primeiro
+              </button>
+              <p className="hero__micro"><LockIcon /> Checkout seguro • o quiz é opcional</p>
             </div>
             <HeroVisual />
           </div>
         </section>
+
+        <Quiz />
 
         <section className="section pain-section" id="problema" data-track-section="problema">
           <div className="container pain-layout" data-reveal>
@@ -449,7 +422,7 @@ export default function App() {
               })}
             </div>
             <blockquote className="method-quote">Você não precisa transformar cada refeição em uma lista de regras. Precisa de uma referência clara para saber o que priorizar quando decide comer menos.</blockquote>
-            <button id="cta-metodo" className="button button--primary section-cta" type="button" onClick={() => scrollToQuiz('method')}>
+            <button id="cta-metodo" className="button button--primary section-cta" type="button" onClick={() => openCheckout('method')}>
               Quero aplicar isso nas minhas refeições <ArrowRightIcon />
             </button>
           </div>
@@ -459,8 +432,8 @@ export default function App() {
           <div className="container" data-reveal>
             <div className="section-heading">
               <span className="eyebrow">O QUE VOCÊ RECEBE</span>
-              <h2>Um método claro.<br />Um produto prático.</h2>
-              <p>O Prato 10x transforma uma dificuldade abstrata em decisões simples para o dia a dia.</p>
+              <h2>Materiais que você abre,<br />consulta e usa.</h2>
+              <p>Em vez de uma ideia abstrata, você recebe referências visuais para consultar nos momentos em que a dúvida aparece.</p>
             </div>
 
             <div className="product-list">
@@ -690,18 +663,17 @@ export default function App() {
         <section className="section conversion-bridge-section" id="proximo-passo" data-track-section="proximo_passo">
           <div className="container" data-reveal>
             <div className="conversion-bridge">
-              <span className="eyebrow">PRÓXIMO PASSO</span>
-              <h2>Já entendi. Agora quero descobrir minhas prioridades.</h2>
-              <p>Responda uma pergunta rápida para continuar para o Prato 10x.</p>
-              <button id="cta-proximo-passo" className="button button--primary conversion-bridge__cta" type="button" onClick={() => scrollToQuiz('long-form-bridge')}>
-                Quero descobrir minhas prioridades <ArrowRightIcon />
+              <span className="eyebrow">ACESSO DIRETO</span>
+              <h2>Quer ter essa referência disponível nas próximas refeições?</h2>
+              <p>Você pode ir direto ao checkout. O quiz no início da página serve para identificação e não é obrigatório para comprar.</p>
+              <button id="cta-proximo-passo" className="button button--primary conversion-bridge__cta" type="button" onClick={() => openCheckout('long-form-bridge')}>
+                Quero acessar o Prato 10x — R$ 47 <ArrowRightIcon />
               </button>
-              <small><LockIcon /> 1 pergunta rápida • depois você segue para o acesso ao Prato 10x</small>
+              <small><LockIcon /> Pagamento único • checkout seguro • acesso digital</small>
             </div>
           </div>
         </section>
 
-        <Quiz />
 
         <section className="section audience-section" id="para-quem" data-track-section="para_quem">
           <div className="container audience-layout" data-reveal>
@@ -730,8 +702,8 @@ export default function App() {
           <div className="container faq-layout" data-reveal>
             <div className="section-heading">
               <span className="eyebrow">DÚVIDAS FREQUENTES</span>
-              <h2>Antes de fazer o quiz.</h2>
-              <button className="text-link" type="button" onClick={() => scrollToQuiz('faq')}>Ir para a pergunta rápida <ArrowRightIcon /></button>
+              <h2>Dúvidas antes de acessar.</h2>
+              <button className="text-link" type="button" onClick={() => openCheckout('faq')}>Acessar o Prato 10x por R$ 47 <ArrowRightIcon /></button>
             </div>
             <div className="faq-list">
               {faqs.map((faq) => (

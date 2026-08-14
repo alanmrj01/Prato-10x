@@ -2,12 +2,13 @@ export const siteConfig = {
   productName: 'Prato 10x',
   productTagline: 'Refeições menores. Escolhas mais inteligentes.',
   price: 'R$ 47',
+  priceValue: 47,
   quizFormName: 'prato-10x-quiz',
-  pageVersion: 'prato-10x-v1',
+  pageVersion: 'prato-10x-v2-low-ticket-quiz7',
 
   /**
    * Substitua este endereço pelo link definitivo do checkout.
-   * Todos os botões exibidos após o quiz usam esta configuração.
+   * Todos os CTAs de acesso usam esta configuração; o quiz é opcional.
    */
   checkoutUrl: 'https://pay.kiwify.com.br/qpiXBDM',
 

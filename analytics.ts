@@ -1,4 +1,4 @@
-import { siteConfig } from './config'
+import { isCheckoutConfigured, siteConfig } from './config'
 
 type AnalyticsValue = string | number | boolean | null | undefined
 export type AnalyticsPayload = Record<string, AnalyticsValue>
@@ -12,6 +12,7 @@ type SectionState = {
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>
+    fbq?: (...args: unknown[]) => void
   }
 }
 
@@ -80,6 +81,45 @@ export function trackEvent(
     ...getUtmParameters(),
     ...payload,
   })
+}
+
+
+export function openCheckout(buttonLocation: string): void {
+  trackEvent('checkout_clicked', {
+    button_location: buttonLocation,
+  })
+
+  trackEvent('checkout_click', {
+    button_location: buttonLocation,
+    checkout_provider: 'kiwify',
+  })
+
+  try {
+    window.fbq?.('track', 'InitiateCheckout', {
+      content_name: siteConfig.productName,
+      value: siteConfig.priceValue,
+      currency: 'BRL',
+    })
+  } catch {
+    // Pixel nunca deve bloquear a navegação para o checkout.
+  }
+
+  if (!isCheckoutConfigured()) {
+    console.warn('Configure o link definitivo do checkout em config.ts.')
+    alert('O checkout ainda não está configurado para esta publicação.')
+    return
+  }
+
+  const checkoutUrl = new URL(siteConfig.checkoutUrl)
+  const attribution = getUtmParameters()
+
+  for (const [key, value] of Object.entries(attribution)) {
+    if (value && !checkoutUrl.searchParams.has(key)) {
+      checkoutUrl.searchParams.set(key, value)
+    }
+  }
+
+  window.location.href = checkoutUrl.toString()
 }
 
 function secondsSince(startedAt: number): number {

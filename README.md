@@ -25,7 +25,7 @@ O build também copia para `dist` os arquivos estáticos usados pela landing pag
 - `index.html` — documento HTML e Meta Pixel
 - `main.tsx` — entrada React
 - `App.tsx` — landing page
-- `Quiz.tsx` — quiz e redirecionamento para checkout
+- `Quiz.tsx` — quiz opcional de 7 perguntas, registro anônimo via Netlify Forms e CTA direto para checkout
 - `config.ts` — configuração do produto/checkout
 - `analytics.ts` — eventos e UTMs
 - `styles.css` — estilos
