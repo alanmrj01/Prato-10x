@@ -4,7 +4,7 @@ export const siteConfig = {
   price: 'R$ 47',
   priceValue: 47,
   quizFormName: 'prato-10x-quiz',
-  pageVersion: 'prato-10x-v2-low-ticket-quiz7',
+  pageVersion: 'prato-10x-v2-2-lightcopy-15dias',
 
   /**
    * Substitua este endereço pelo link definitivo do checkout.

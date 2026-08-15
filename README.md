@@ -1,31 +1,31 @@
-# Prato 10x — Landing Page
+# Prato 10x — Landing Page v2.2
 
-Versão de raiz plana preparada para GitHub, StackBlitz e Netlify. O `package.json` está diretamente na raiz do ZIP.
+Landing page React + Vite + TypeScript, preparada para StackBlitz e deploy na Netlify.
 
-## Importante
-Todos os arquivos necessários estão na raiz de propósito. Não renomeie nem troque o conteúdo entre arquivos.
+## Rodar localmente / StackBlitz
 
-## StackBlitz
-O projeto possui `stackblitz.startCommand` no `package.json` e inicia com:
+```bash
+npm install
+npm run dev
+```
 
-    npm run dev
+O StackBlitz usa `.stackblitzrc` e inicia automaticamente com `npm run dev`.
 
-## Netlify
-Build:
+## Build de produção
 
-    npm run build
+```bash
+npm run build
+```
 
-Publish directory:
+Saída: `dist/`
 
-    dist
+## Esta versão
 
-O build também copia para `dist` os arquivos estáticos usados pela landing page.
-
-## Arquivos principais
-- `index.html` — documento HTML e Meta Pixel
-- `main.tsx` — entrada React
-- `App.tsx` — landing page
-- `Quiz.tsx` — quiz opcional de 7 perguntas, registro anônimo via Netlify Forms e CTA direto para checkout
-- `config.ts` — configuração do produto/checkout
-- `analytics.ts` — eventos e UTMs
-- `styles.css` — estilos
+- Hero mobile-first com a imagem aprovada e headline embutida.
+- Subheadline orientada à tangibilização do Prato 10x.
+- Preço e CTA direto para a Kiwify antes do quiz.
+- Quiz de 7 perguntas curtas, 2 respostas cada, sem obrigatoriedade para checkout.
+- Plano de aplicação atualizado para 15 dias em todo o site.
+- Prévias educativas da Matriz das 4 Funções e do Sistema 2 + 2 + 2.
+- Eventos de comportamento, quiz e checkout preservados.
+- Netlify Forms, GTM, Meta Pixel e passagem de UTM preservados.

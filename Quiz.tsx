@@ -16,50 +16,43 @@ type QuizQuestion = {
 const quizQuestions: QuizQuestion[] = [
   {
     id: 'q1',
-    question:
-      'Quando você está comendo menos, já olha para o prato e pensa: “o que eu deveria colocar aqui para essa refeição fazer mais sentido?”',
+    question: 'Quando você come menos, fica em dúvida sobre o que merece espaço no prato?',
     yesLabel: 'Sim, isso acontece comigo',
-    noLabel: 'Não, normalmente sei o que escolher',
+    noLabel: 'Não, isso já é claro para mim',
   },
   {
     id: 'q2',
-    question:
-      'Nos dias corridos, você acaba escolhendo apenas o que estiver mais fácil porque não quer pensar muito na refeição?',
-    yesLabel: 'Sim, acontece com frequência',
-    noLabel: 'Não, costumo me organizar antes',
+    question: 'Nos dias corridos, acaba escolhendo só o que está mais fácil?',
+    yesLabel: 'Sim, acontece bastante',
+    noLabel: 'Não, costumo me organizar',
   },
   {
     id: 'q3',
-    question:
-      'Quando cabe menos comida, você sente dificuldade em decidir o que deveria entrar primeiro no prato?',
-    yesLabel: 'Sim, essa é uma dúvida real',
-    noLabel: 'Não, isso está claro para mim',
+    question: 'Quando cabe menos, escolher o que entra primeiro vira uma dúvida?',
+    yesLabel: 'Sim, essa dúvida aparece',
+    noLabel: 'Não, sei o que priorizar',
   },
   {
     id: 'q4',
-    question:
-      'Ter uma referência visual pronta no celular ajudaria você na hora de montar uma refeição menor?',
+    question: 'Uma referência visual no celular facilitaria essas escolhas?',
     yesLabel: 'Sim, eu consultaria',
-    noLabel: 'Não faria diferença para mim',
+    noLabel: 'Não faria diferença',
   },
   {
     id: 'q5',
-    question:
-      'Algumas combinações práticas já organizadas ajudariam você a depender menos do improviso?',
-    yesLabel: 'Sim, facilitaria bastante',
+    question: 'Combinações já organizadas ajudariam a reduzir o improviso?',
+    yesLabel: 'Sim, ajudariam muito',
     noLabel: 'Não, prefiro decidir na hora',
   },
   {
     id: 'q6',
-    question:
-      'Um plano simples de 30 dias ajudaria você a transformar essas escolhas em uma rotina mais consistente?',
+    question: 'Um plano de 15 dias ajudaria você a organizar melhor essa rotina?',
     yesLabel: 'Sim, gosto de ter um caminho',
     noLabel: 'Não preciso de um plano',
   },
   {
     id: 'q7',
-    question:
-      'Se você tivesse uma ferramenta visual para consultar sempre que surgisse essa dúvida, usaria no dia a dia?',
+    question: 'Você usaria essa referência sempre que a dúvida aparecesse?',
     yesLabel: 'Sim, eu usaria',
     noLabel: 'Não seria útil para mim',
   },
@@ -221,11 +214,7 @@ export function Quiz() {
       <div className="container quiz-panel">
         <div className="quiz-panel__heading">
           <span className="eyebrow">QUIZ DE IDENTIFICAÇÃO • 7 PERGUNTAS</span>
-          <h2>Veja se essa situação realmente parece com a sua.</h2>
-          <p>
-            Leva menos de um minuto. O quiz é opcional e não bloqueia o acesso ao
-            Prato 10x.
-          </p>
+          <h2>Veja em 1 min se essa situação se parece com a sua</h2>
         </div>
 
         <div className="quiz-progress" aria-label={`Progresso do quiz: ${Math.round(progress)}%`}>
@@ -286,7 +275,7 @@ export function Quiz() {
                 className="button button--primary"
                 onClick={() => openCheckout('quiz-result')}
               >
-                Quero acessar o Prato 10x — {siteConfig.price} <ArrowRightIcon />
+                Quero usar essa referência — {siteConfig.price} <ArrowRightIcon />
               </button>
               <button type="button" className="quiz-restart" onClick={restart}>
                 Refazer o quiz
@@ -312,7 +301,7 @@ export function Quiz() {
             className="button button--secondary"
             onClick={() => openCheckout('quiz-direct')}
           >
-            Ir direto ao acesso <ArrowRightIcon />
+            Prefiro ir direto ao Prato 10x <ArrowRightIcon />
           </button>
         </div>
 

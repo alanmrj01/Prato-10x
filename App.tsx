@@ -63,7 +63,7 @@ const productItems = [
     art: 'map',
   },
   {
-    title: 'Plano de aplicação por 30 dias',
+    title: 'Plano de aplicação por 15 dias',
     copy: 'Um caminho simples para transformar conhecimento em rotina possível.',
     icon: CalendarIcon,
     art: 'calendar',
@@ -129,7 +129,7 @@ const insideItems = [
     icon: BagIcon,
   },
   {
-    kicker: '30 DIAS',
+    kicker: '15 DIAS',
     title: 'Plano de aplicação',
     copy: 'Um caminho curto para transformar a referência em uma rotina mais fácil de repetir.',
     icon: CalendarIcon,
@@ -172,24 +172,20 @@ function scrollToQuiz(source: string) {
 
 function HeroVisual() {
   return (
-    <figure className="hero-visual hero-visual--photo" aria-label="Prato 10x sendo consultado durante uma refeição menor">
+    <figure className="hero-visual hero-visual--photo" aria-label="Cena real do Prato 10x sendo consultado durante uma refeição menor">
       <picture>
         <source
-          srcSet="/prato10x-hero-mobile-720.webp 720w, /prato10x-hero-mobile-1200.webp 1200w"
-          sizes="(max-width: 699px) 92vw, 46vw"
+          srcSet="/prato10x-hero-mobile-720.webp 720w, /prato10x-hero-mobile-1200.webp 1149w"
+          sizes="(max-width: 699px) 100vw, 56vw"
         />
         <img
           src="/prato10x-hero-mobile-1200.webp"
-          alt="Mulher em uma cozinha real com uma refeição menor, celular mostrando a referência visual do Prato 10x, guia e plano de 30 dias"
-          width="1200"
-          height="1500"
+          alt="Mulher à mesa com uma refeição menor, tablet exibindo o aplicativo visual do Prato 10x e o livro Refeições Específicas e Menores"
+          width="1149"
+          height="1536"
           fetchPriority="high"
         />
       </picture>
-      <figcaption>
-        <span><GridIcon /> Referência visual no celular</span>
-        <span><CalendarIcon /> Plano de 30 dias</span>
-      </figcaption>
     </figure>
   )
 }
@@ -244,7 +240,7 @@ function ProductArt({ type }: { type: string }) {
 
   return (
     <div className="product-art product-art--calendar" aria-hidden="true">
-      <strong>30</strong><span>dias</span>
+      <strong>15</strong><span>dias</span>
     </div>
   )
 }
@@ -315,7 +311,7 @@ export default function App() {
             <button className={activeSection === 'produto' ? 'is-active' : undefined} aria-current={activeSection === 'produto' ? 'location' : undefined} type="button" onClick={() => navigateTo('produto')}>O que você recebe</button>
             <button className={activeSection === 'quiz' ? 'is-active' : undefined} aria-current={activeSection === 'quiz' ? 'location' : undefined} type="button" onClick={() => scrollToQuiz('header-nav')}>Quiz</button>
           </nav>
-          <button id="cta-header" className="header-quiz" type="button" onClick={() => openCheckout('header')}>Acessar por R$ 47</button>
+          <button id="cta-header" className="header-quiz" type="button" onClick={() => openCheckout('header')}>Quero conhecer o Prato 10x</button>
           <button
             className="menu-toggle"
             type="button"
@@ -331,7 +327,7 @@ export default function App() {
           <button type="button" onClick={() => navigateTo('problema')}>O problema</button>
           <button type="button" onClick={() => navigateTo('metodo')}>Como funciona</button>
           <button type="button" onClick={() => navigateTo('produto')}>O que você recebe</button>
-          <button type="button" onClick={() => { setMenuOpen(false); openCheckout('mobile-menu') }}>Acessar o Prato 10x — R$ 47</button>
+          <button type="button" onClick={() => { setMenuOpen(false); openCheckout('mobile-menu') }}>Quero acessar por R$ 47</button>
         </div>
       </header>
 
@@ -339,21 +335,19 @@ export default function App() {
         <section className="hero" id="top" data-track-section="hero">
           <div className="hero__shape hero__shape--sage" aria-hidden="true" />
           <div className="hero__shape hero__shape--peach" aria-hidden="true" />
-          <div className="container hero__grid">
-            <div className="hero__copy" data-reveal>
-              <span className="hero__eyebrow">GUIA VISUAL • PRÁTICO • ACESSO IMEDIATO</span>
-              <h1>
-                <span>Está comendo menos</span>
-                <em>e não sabe mais</em>
-                <span>o que colocar no prato?</span>
-              </h1>
-              <p className="hero__lead">O Prato 10x transforma essa dúvida em uma referência visual para consultar no celular: veja o que priorizar, encontre combinações possíveis e dependa menos do improviso.</p>
-              <div className="hero__quickfacts" aria-label="O que você recebe com o Prato 10x">
-                <span><GridIcon /> Matriz visual</span>
-                <span><BowlIcon /> Combinações práticas</span>
-                <span><CalendarIcon /> Plano de 30 dias</span>
-                <span><ClockIcon /> Consulta no celular</span>
+          <div className="container hero__grid hero__grid--image-led">
+            <HeroVisual />
+            <div className="hero__copy hero__copy--offer" data-reveal>
+              <h1 className="sr-only">Se você está comendo menos, saber o que merece espaço no prato se tornou ainda mais importante.</h1>
+              <span className="hero__eyebrow">PRATO 10X • GUIA VISUAL • ACESSO IMEDIATO</span>
+              <p className="hero__lead hero__lead--primary">Use o Prato 10x para consultar combinações, organizar refeições menores e parar de decidir tudo no improviso.</p>
+
+              <div className="hero__tangible" aria-label="O que você recebe com o Prato 10x">
+                <span><BookIcon /> Refeições específicas e menores</span>
+                <span><GridIcon /> Matriz visual de refeições</span>
+                <span><CalendarIcon /> Plano de 15 dias</span>
               </div>
+
               <div className="hero__offer" id="oferta" data-track-once="offer_view">
                 <div className="hero__price" id="preco" data-track-once="price_view">
                   <strong>R$ 47</strong>
@@ -361,18 +355,15 @@ export default function App() {
                 </div>
                 <div className="hero__offer-copy">
                   <strong>Acesso digital imediato</strong>
-                  <span>Guia visual + materiais práticos</span>
+                  <span>Material visual para consultar no celular ou tablet</span>
                 </div>
               </div>
+
               <button id="cta-hero" className="button button--primary hero__cta" type="button" onClick={() => openCheckout('hero')}>
-                Quero acessar o Prato 10x <ArrowRightIcon />
+                Quero ter essa referência comigo <ArrowRightIcon />
               </button>
-              <button className="hero__quiz-link" type="button" onClick={() => scrollToQuiz('hero-secondary')}>
-                Prefiro fazer o quiz de 7 perguntas primeiro
-              </button>
-              <p className="hero__micro"><LockIcon /> Checkout seguro • o quiz é opcional</p>
+              <p className="hero__micro"><LockIcon /> Acesso imediato • produto digital • checkout seguro</p>
             </div>
-            <HeroVisual />
           </div>
         </section>
 
@@ -394,6 +385,24 @@ export default function App() {
               <article><span className="pain-flow__icon pain-flow__icon--peach"><BowlIcon /></span><strong>Corto ou improviso por tentativa e erro.</strong></article>
               <span className="pain-flow__arrow">→</span>
               <article><span className="pain-flow__icon"><QuestionIcon /></span><strong>Continuo sem saber se priorizei o que importava.</strong></article>
+            </div>
+
+            <div className="learning-slice" data-track-once="content_preview_priority">
+              <span className="eyebrow">UM DETALHE QUE MUDA A DECISÃO</span>
+              <h3>Diminuir o prato não é a mesma coisa que saber o que priorizar.</h3>
+              <p>Quando a única lógica é “comer menos”, é fácil começar perguntando <strong>“o que eu tiro?”</strong>. No Prato 10x, a ordem muda: primeiro você enxerga o papel das escolhas; depois adapta a combinação ao espaço que existe no prato.</p>
+              <div className="learning-slice__contrast">
+                <article>
+                  <span>NO IMPROVISO</span>
+                  <strong>“O que eu corto?”</strong>
+                  <small>A decisão começa pela retirada, sem uma referência do conjunto.</small>
+                </article>
+                <article className="learning-slice__right">
+                  <span>COM UMA REFERÊNCIA</span>
+                  <strong>“O que merece prioridade?”</strong>
+                  <small>A Matriz das 4 Funções ajuda a olhar para Construção, Energia, Cor e variedade e Complemento.</small>
+                </article>
+              </div>
             </div>
           </div>
         </section>
@@ -423,7 +432,7 @@ export default function App() {
             </div>
             <blockquote className="method-quote">Você não precisa transformar cada refeição em uma lista de regras. Precisa de uma referência clara para saber o que priorizar quando decide comer menos.</blockquote>
             <button id="cta-metodo" className="button button--primary section-cta" type="button" onClick={() => openCheckout('method')}>
-              Quero aplicar isso nas minhas refeições <ArrowRightIcon />
+              Quero parar de decidir no improviso <ArrowRightIcon />
             </button>
           </div>
         </section>
@@ -487,7 +496,7 @@ export default function App() {
 
               <article className="showcase-card showcase-card--plan">
                 <span className="showcase-card__eyebrow">PLANO DE APLICAÇÃO</span>
-                <strong>30 dias</strong>
+                <strong>15 dias</strong>
                 <ul>
                   <li>Mais direção nas escolhas</li>
                   <li>Menos improviso na rotina</li>
@@ -616,6 +625,20 @@ export default function App() {
               })}
             </div>
 
+            <div className="content-preview" data-track-once="content_preview_222">
+              <div>
+                <span className="eyebrow">UM EXEMPLO DE DENTRO DO PRATO 10X</span>
+                <h3>O Sistema 2 + 2 + 2 reduz decisões antes da dúvida aparecer.</h3>
+                <p>Em vez de inventar todas as refeições na hora, você separa poucas opções que já fazem sentido para a sua rotina e deixa essas referências prontas para consultar.</p>
+              </div>
+              <div className="content-preview__chips" aria-label="Exemplo do sistema 2 mais 2 mais 2">
+                <span><b>2</b> cafés da manhã</span>
+                <span><b>2</b> refeições rápidas</span>
+                <span><b>2</b> lanches</span>
+              </div>
+              <small>É uma referência de organização, não um cardápio rígido ou uma prescrição individual.</small>
+            </div>
+
             <div className="routine-callout">
               <LeafIcon />
               <p><strong>Não é um conteúdo para estudar durante semanas.</strong> É uma referência para consultar quando surgir a dúvida.</p>
@@ -667,7 +690,7 @@ export default function App() {
               <h2>Quer ter essa referência disponível nas próximas refeições?</h2>
               <p>Você pode ir direto ao checkout. O quiz no início da página serve para identificação e não é obrigatório para comprar.</p>
               <button id="cta-proximo-passo" className="button button--primary conversion-bridge__cta" type="button" onClick={() => openCheckout('long-form-bridge')}>
-                Quero acessar o Prato 10x — R$ 47 <ArrowRightIcon />
+                Quero o Prato 10x no meu celular <ArrowRightIcon />
               </button>
               <small><LockIcon /> Pagamento único • checkout seguro • acesso digital</small>
             </div>
@@ -703,7 +726,7 @@ export default function App() {
             <div className="section-heading">
               <span className="eyebrow">DÚVIDAS FREQUENTES</span>
               <h2>Dúvidas antes de acessar.</h2>
-              <button className="text-link" type="button" onClick={() => openCheckout('faq')}>Acessar o Prato 10x por R$ 47 <ArrowRightIcon /></button>
+              <button className="text-link" type="button" onClick={() => openCheckout('faq')}>Quero consultar o Prato 10x <ArrowRightIcon /></button>
             </div>
             <div className="faq-list">
               {faqs.map((faq) => (
