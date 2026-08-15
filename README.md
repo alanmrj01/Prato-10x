@@ -1,6 +1,6 @@
 # Prato 10x — Landing Page
 
-Versão de raiz plana preparada para GitHub, StackBlitz e Netlify. O `package.json` está diretamente na raiz do ZIP.
+Versão de raiz plana preparada para GitHub, StackBlitz e Netlify.
 
 ## Importante
 Todos os arquivos necessários estão na raiz de propósito. Não renomeie nem troque o conteúdo entre arquivos.
