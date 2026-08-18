@@ -2911,3 +2911,24 @@ summary {
     grid-column: 1 / -1;
   }
 }
+
+
+/* Visível somente quando a URL contém ?internal_test=1. */
+.internal-test-banner {
+  position: sticky;
+  top: 0;
+  z-index: 99999;
+  width: 100%;
+  padding: 8px 12px;
+  background: #5d2b78;
+  color: #fff;
+  font: 700 12px/1.35 Manrope, Arial, sans-serif;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .internal-test-banner {
+    font-size: 13px;
+  }
+}

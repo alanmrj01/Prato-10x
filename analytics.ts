@@ -1,4 +1,8 @@
-import { isCheckoutConfigured, siteConfig } from './config'
+import {
+  isCheckoutConfigured,
+  isTestCheckoutConfigured,
+  siteConfig,
+} from './config'
 
 type AnalyticsValue = string | number | boolean | null | undefined
 export type AnalyticsPayload = Record<string, AnalyticsValue>
@@ -13,6 +17,7 @@ declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>
     fbq?: (...args: unknown[]) => void
+    __PRATO10X_INTERNAL_TEST__?: boolean
   }
 }
 
@@ -22,9 +27,36 @@ const UTM_KEYS = [
   'utm_campaign',
   'utm_content',
   'utm_term',
+  'utm_id',
 ] as const
 
-const ATTRIBUTION_STORAGE_KEY = 'prato10x_attribution'
+const META_ATTRIBUTION_KEYS = ['fbclid', 'fbp', 'fbc'] as const
+const EXTRA_ATTRIBUTION_KEYS = [
+  'src',
+  'placement',
+  'campaign_id',
+  'adset_id',
+  'ad_id',
+] as const
+
+const ATTRIBUTION_KEYS = [
+  ...UTM_KEYS,
+  ...META_ATTRIBUTION_KEYS,
+  ...EXTRA_ATTRIBUTION_KEYS,
+] as const
+
+const ATTRIBUTION_STORAGE_KEY = 'prato10x_attribution_v2'
+const JOURNEY_STORAGE_KEY = 'prato10x_journey_id'
+
+function readCookie(name: string): string {
+  const prefix = `${name}=`
+  const entry = document.cookie
+    .split(';')
+    .map((value) => value.trim())
+    .find((value) => value.startsWith(prefix))
+
+  return entry ? decodeURIComponent(entry.slice(prefix.length)) : ''
+}
 
 function readStoredAttribution(): Record<string, string> {
   try {
@@ -33,7 +65,7 @@ function readStoredAttribution(): Record<string, string> {
 
     const parsed = JSON.parse(raw) as Record<string, unknown>
     return Object.fromEntries(
-      UTM_KEYS.map((key) => [
+      ATTRIBUTION_KEYS.map((key) => [
         key,
         typeof parsed[key] === 'string' ? String(parsed[key]) : '',
       ]),
@@ -50,17 +82,52 @@ function persistAttribution(values: Record<string, string>): void {
       JSON.stringify(values),
     )
   } catch {
-    // O rastreamento nunca deve bloquear a experiência da landing page.
+    // Rastreamento nunca deve bloquear a experiência da landing page.
   }
 }
 
-export function getUtmParameters(): Record<string, string> {
+export function isInternalTestMode(): boolean {
+  if (typeof window.__PRATO10X_INTERNAL_TEST__ === 'boolean') {
+    return window.__PRATO10X_INTERNAL_TEST__
+  }
+
+  return new URLSearchParams(window.location.search).get('internal_test') === '1'
+}
+
+export function getJourneyId(): string {
+  try {
+    const existing = window.sessionStorage.getItem(JOURNEY_STORAGE_KEY)
+    if (existing) return existing
+
+    const generated = typeof crypto.randomUUID === 'function'
+      ? `j_${crypto.randomUUID()}`
+      : `j_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`
+
+    window.sessionStorage.setItem(JOURNEY_STORAGE_KEY, generated)
+    return generated
+  } catch {
+    return `j_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`
+  }
+}
+
+export function getAttributionParameters(): Record<string, string> {
   const params = new URLSearchParams(window.location.search)
   const stored = readStoredAttribution()
+  const cookieFbp = readCookie('_fbp')
+  const cookieFbc = readCookie('_fbc')
 
   const values = Object.fromEntries(
-    UTM_KEYS.map((key) => {
+    ATTRIBUTION_KEYS.map((key) => {
       const currentValue = params.get(key)?.trim() ?? ''
+
+      if (key === 'fbp') {
+        return [key, currentValue || cookieFbp || stored[key] || '']
+      }
+
+      if (key === 'fbc') {
+        return [key, currentValue || cookieFbc || stored[key] || '']
+      }
+
       return [key, currentValue || stored[key] || '']
     }),
   )
@@ -69,54 +136,89 @@ export function getUtmParameters(): Record<string, string> {
   return values
 }
 
+export function getUtmParameters(): Record<string, string> {
+  const attribution = getAttributionParameters()
+  return Object.fromEntries(UTM_KEYS.map((key) => [key, attribution[key] || '']))
+}
+
 export function trackEvent(
   event: string,
   payload: AnalyticsPayload = {},
 ): void {
+  const internalTest = isInternalTestMode()
+
   window.dataLayer = window.dataLayer ?? []
   window.dataLayer.push({
     event,
     page_version: siteConfig.pageVersion,
     page_path: window.location.pathname,
-    ...getUtmParameters(),
+    journey_id: getJourneyId(),
+    internal_test: internalTest ? '1' : '0',
+    ...(internalTest ? { debug_mode: true } : {}),
+    ...getAttributionParameters(),
     ...payload,
   })
 }
 
-
-export function openCheckout(buttonLocation: string): void {
-  trackEvent('checkout_clicked', {
-    button_location: buttonLocation,
-  })
-
-  trackEvent('checkout_click', {
-    button_location: buttonLocation,
-    checkout_provider: 'kiwify',
-  })
-
-  try {
-    window.fbq?.('track', 'InitiateCheckout', {
-      content_name: siteConfig.productName,
-      value: siteConfig.priceValue,
-      currency: 'BRL',
-    })
-  } catch {
-    // Pixel nunca deve bloquear a navegação para o checkout.
-  }
-
-  if (!isCheckoutConfigured()) {
-    console.warn('Configure o link definitivo do checkout em config.ts.')
-    alert('O checkout ainda não está configurado para esta publicação.')
-    return
-  }
-
-  const checkoutUrl = new URL(siteConfig.checkoutUrl)
-  const attribution = getUtmParameters()
+function appendCheckoutTracking(checkoutUrl: URL): void {
+  const attribution = getAttributionParameters()
 
   for (const [key, value] of Object.entries(attribution)) {
     if (value && !checkoutUrl.searchParams.has(key)) {
       checkoutUrl.searchParams.set(key, value)
     }
+  }
+
+  if (!checkoutUrl.searchParams.has('s1')) {
+    checkoutUrl.searchParams.set('s1', getJourneyId())
+  }
+}
+
+export function openCheckout(buttonLocation: string): void {
+  const internalTest = isInternalTestMode()
+
+  trackEvent('checkout_clicked', {
+    button_location: buttonLocation,
+    checkout_mode: internalTest ? 'test' : 'production',
+  })
+
+  trackEvent('checkout_click', {
+    button_location: buttonLocation,
+    checkout_provider: 'kiwify',
+    checkout_mode: internalTest ? 'test' : 'production',
+  })
+
+  /*
+   * IMPORTANTE:
+   * Não disparamos InitiateCheckout da Meta nesta landing.
+   * A Kiwify é a fonte responsável pelo InitiateCheckout quando o checkout
+   * realmente carrega. Isso evita contabilizar o clique da landing e a visita
+   * ao checkout como dois InitiateCheckout diferentes.
+   */
+
+  const checkoutConfigured = internalTest
+    ? isTestCheckoutConfigured()
+    : isCheckoutConfigured()
+
+  if (!checkoutConfigured) {
+    console.warn(
+      internalTest
+        ? 'Configure o checkout de teste em config.ts.'
+        : 'Configure o link definitivo do checkout em config.ts.',
+    )
+    alert('O checkout ainda não está configurado para esta publicação.')
+    return
+  }
+
+  const checkoutUrl = new URL(
+    internalTest ? siteConfig.testCheckoutUrl : siteConfig.checkoutUrl,
+  )
+
+  appendCheckoutTracking(checkoutUrl)
+
+  if (internalTest) {
+    checkoutUrl.searchParams.set('src', 'internal_test')
+    checkoutUrl.searchParams.set('internal_test', '1')
   }
 
   window.location.href = checkoutUrl.toString()
@@ -127,7 +229,8 @@ function secondsSince(startedAt: number): number {
 }
 
 export function initializeBehaviorTracking(): () => void {
-  getUtmParameters()
+  getAttributionParameters()
+  getJourneyId()
 
   if (!('IntersectionObserver' in window)) return () => undefined
 

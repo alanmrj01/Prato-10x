@@ -1,6 +1,39 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
+    <!-- Prato 10x: bootstrap de tracking antes de qualquer tag externa. -->
+    <script>
+      (function(w) {
+        var params = new URLSearchParams(w.location.search);
+        var internalTest = params.get('internal_test') === '1';
+
+        w.__PRATO10X_INTERNAL_TEST__ = internalTest;
+        w.dataLayer = w.dataLayer || [];
+        w.dataLayer.push({
+          event: 'prato10x_boot',
+          internal_test: internalTest ? '1' : '0',
+          debug_mode: internalTest
+        });
+
+        if (internalTest) {
+          /*
+           * Em QA, o Meta Pixel de produção fica neutralizado antes do GTM.
+           * Isso também impede snippets Meta padrão disparados pelo GTM de
+           * inicializarem o fbq nessa sessão.
+           */
+          var noop = function() {};
+          noop.callMethod = noop;
+          noop.queue = [];
+          noop.push = noop;
+          noop.loaded = true;
+          noop.version = '2.0';
+          w.fbq = noop;
+          w._fbq = noop;
+          console.info('[Prato 10x] Modo teste: Meta Pixel de produção bloqueado.');
+        }
+      })(window);
+    </script>
+
     <!-- Google Tag Manager -->
     <script>
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -25,18 +58,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet" />
     <title>Prato 10x — Refeições menores, escolhas mais inteligentes</title>
 
-    <!-- Meta Pixel Code -->
+    <!-- Meta Pixel Code: produção somente -->
     <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '2073559566628743');
-      fbq('track', 'PageView');
+      if (!window.__PRATO10X_INTERNAL_TEST__) {
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '2073559566628743');
+        fbq('track', 'PageView');
+      }
     </script>
     <!-- End Meta Pixel Code -->
   </head>
@@ -81,6 +116,9 @@
       <input type="hidden" name="utm_campaign" />
       <input type="hidden" name="utm_content" />
       <input type="hidden" name="utm_term" />
+      <input type="hidden" name="utm_id" />
+      <input type="hidden" name="internal_test" />
+      <input type="hidden" name="journey_id" />
       <input type="hidden" name="page_version" />
       <input type="hidden" name="timestamp" />
     </form>

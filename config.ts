@@ -4,13 +4,16 @@ export const siteConfig = {
   price: 'R$ 47',
   priceValue: 47,
   quizFormName: 'prato-10x-quiz',
-  pageVersion: 'prato-10x-v2-2-lightcopy-15dias',
+  pageVersion: 'prato-10x-v2-3-tracking-safe',
+
+  /** Checkout comercial usado por visitantes reais. */
+  checkoutUrl: 'https://pay.kiwify.com.br/qpiXBDM',
 
   /**
-   * Substitua este endereço pelo link definitivo do checkout.
-   * Todos os CTAs de acesso usam esta configuração; o quiz é opcional.
+   * Checkout exclusivo para QA/testes internos.
+   * Nunca deve carregar Pixel/CAPI de produção na Kiwify.
    */
-  checkoutUrl: 'https://pay.kiwify.com.br/qpiXBDM',
+  testCheckoutUrl: 'https://pay.kiwify.com.br/4B5VArF',
 
   contactEmail: 'contato@seudominio.com.br',
   instagramUrl: '#',
@@ -19,4 +22,8 @@ export const siteConfig = {
 
 export function isCheckoutConfigured(): boolean {
   return !siteConfig.checkoutUrl.includes('COLE_AQUI')
+}
+
+export function isTestCheckoutConfigured(): boolean {
+  return !siteConfig.testCheckoutUrl.includes('COLE_AQUI')
 }

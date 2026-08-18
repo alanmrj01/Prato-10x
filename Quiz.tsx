@@ -1,5 +1,11 @@
 import { useMemo, useRef, useState } from 'react'
-import { openCheckout, getUtmParameters, trackEvent } from './analytics'
+import {
+  getJourneyId,
+  getUtmParameters,
+  isInternalTestMode,
+  openCheckout,
+  trackEvent,
+} from './analytics'
 import { siteConfig } from './config'
 import { ArrowRightIcon, CheckIcon, LockIcon } from './Icons'
 
@@ -102,14 +108,27 @@ export function Quiz() {
       (answer) => answer === 'yes',
     ).length
 
+    const internalTest = isInternalTestMode()
     const payload = new URLSearchParams({
       'form-name': siteConfig.quizFormName,
       page_version: siteConfig.pageVersion,
       timestamp: new Date().toISOString(),
       score: String(nextScore),
+      internal_test: internalTest ? '1' : '0',
+      journey_id: getJourneyId(),
       ...getUtmParameters(),
       ...nextAnswers,
     })
+
+    if (internalTest) {
+      setStatus('success')
+      trackEvent('quiz_submitted', {
+        submit_status: 'test_skipped',
+        affirmative_answers: nextScore,
+        total_steps: quizQuestions.length,
+      })
+      return
+    }
 
     try {
       const response = await fetch('/', {
@@ -284,7 +303,7 @@ export function Quiz() {
 
             <small className={`quiz-save-status quiz-save-status--${status}`}>
               {status === 'sending' && 'Salvando sua resposta anônima…'}
-              {status === 'success' && 'Resposta anônima registrada.'}
+              {status === 'success' && (isInternalTestMode() ? 'Modo teste: resposta não enviada ao formulário comercial.' : 'Resposta anônima registrada.')}
               {status === 'error' && 'Não foi possível registrar agora, mas isso não bloqueia seu acesso.'}
               {status === 'idle' && 'Resposta anônima.'}
             </small>

@@ -18,7 +18,12 @@ import {
   TargetIcon,
 } from './Icons'
 import { Quiz } from './Quiz'
-import { initializeBehaviorTracking, openCheckout, trackEvent } from './analytics'
+import {
+  initializeBehaviorTracking,
+  isInternalTestMode,
+  openCheckout,
+  trackEvent,
+} from './analytics'
 import { useReveal } from './useReveal'
 import './styles.css'
 
@@ -300,8 +305,15 @@ export default function App() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const internalTest = isInternalTestMode()
+
   return (
     <div className="site-shell">
+      {internalTest && (
+        <div className="internal-test-banner" role="status">
+          MODO TESTE • Meta Pixel bloqueado • checkout de teste ativo
+        </div>
+      )}
       <header className={`topbar${scrolled ? ' topbar--scrolled' : ''}`}>
         <div className="container topbar__inner">
           <a href="#top" className="brand-link" aria-label="Prato 10x — início"><Brand /></a>
